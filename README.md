@@ -32,7 +32,7 @@ Moai World
 
 ## Thanks
 
-**moai-world** © 2017+, [@wgx731]. Released under the [MIT](https://github.com/wgx731/moai-world/blob/master/LICENSE) License.
+**moai-world** © 2019+, [@wgx731]. Released under the [MIT](https://github.com/wgx731/moai-world/blob/master/LICENSE) License.
 
 Authored and maintained by [@wgx731] with help from contributors ([list][contributors]).
 
