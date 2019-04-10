@@ -16,18 +16,19 @@ allprojects {
         projectGroup = 'com.github.wgx731'
         projectVersion = '0.9.9.SNAPSHOT'
 
+        javaVersion = '1.8'
+
         asciidoctorVersion = '1.5.9.2'
         jacocoVersion = '0.8.3'
         spotbugsVersion = '3.1.12'
-
-        javaVersion = '1.8'
-
-        javaxXmlJaxbVersion = '2.3.0'
 
         springBootVersion = '2.1.4.RELEASE'
         apacheCommonLangVersion = '3.8.1'
         jacksonVersion = '2.9.8'
         lombokVersion = '1.18.6'
+        log4j2Version = '2.11.2'
+        javaxXmlJaxbVersion = '2.3.0'
+        disuptorVersion = '3.4.2'
 
         junitVersion = '4.12'
         assertjVersion = '3.11.1'
@@ -39,6 +40,7 @@ allprojects {
     }
 
     apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'idea'
 
     group = "${projectGroup}"
     version = "${projectVersion}"
@@ -57,6 +59,10 @@ allprojects {
             dependency "org.assertj:assertj-core:${assertjVersion}"
             dependency "org.apache.commons:commons-lang3:${apacheCommonLangVersion}"
             dependency "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+            dependency "org.apache.logging.log4j:log4j-core:${log4j2Version}"
+            dependency "org.apache.logging.log4j:log4j-api:${log4j2Version}"
+            dependency "org.apache.logging.log4j:log4j-slf4j-impl:${log4j2Version}"
+            dependency "com.lmax:disruptor:${disuptorVersion}"
         }
     }
 

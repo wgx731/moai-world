@@ -1,2 +1,4 @@
 rootProject.name = 'moai'
 
+include 'moai-java'
+
