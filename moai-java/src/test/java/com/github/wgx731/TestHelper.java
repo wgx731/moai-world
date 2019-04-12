@@ -32,7 +32,7 @@ public abstract class TestHelper {
 
   protected List<Record> sampleRecords;
 
-  protected void setUpSampleRecords() {
+  protected void setUpFixSampleRecords() {
     sampleRecords = new ArrayList<>();
     Record r1 = new Record();
     r1.setId("sample-01");

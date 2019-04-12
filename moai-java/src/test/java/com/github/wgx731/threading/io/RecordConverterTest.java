@@ -14,7 +14,6 @@ import org.mockito.Mockito;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +29,7 @@ public class RecordConverterTest extends TestHelper {
 
   @Before
   public void setUp() throws Exception {
-    super.setUpSampleRecords();
+    super.setUpFixSampleRecords();
     converter = RecordConverter.builder()
         .mapper(new ObjectMapper())
         .charset(Charset.forName("UTF8"))

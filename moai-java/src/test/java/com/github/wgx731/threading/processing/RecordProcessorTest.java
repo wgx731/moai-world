@@ -15,11 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RecordProcessorTest extends TestHelper implements SummaryMerger {
 
+
   private RecordProcessor processor;
 
   @Before
   public void setUp() throws Exception {
-    setUpSampleRecords();
+    setUpFixSampleRecords();
     processor = RecordProcessor.builder()
         .records(sampleRecords)
         .build();
