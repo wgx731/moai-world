@@ -6,10 +6,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // TODO: upgrade spotbugs-gradle-plugin once warning is fixed
-        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.9"
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
-        classpath "io.franzbecker:gradle-lombok:2.1"
+        // NOTE: last checked date: 2019-09-03
+        classpath('gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:2.0.0')
+        classpath('net.ltgt.gradle:gradle-apt-plugin:0.21')
+        classpath('io.franzbecker:gradle-lombok:3.1.0')
     }
 }
 
@@ -19,18 +19,14 @@ apply plugin: 'jacoco'
 apply plugin: 'com.github.spotbugs'
 apply plugin: 'io.franzbecker.gradle-lombok'
 
-jar {
-    baseName = 'moai-java'
-}
-
 dependencies {
-    
+
     compile('org.apache.commons:commons-lang3')
     compile('com.fasterxml.jackson.core:jackson-databind')
     compile('org.apache.logging.log4j:log4j-core')
     compile('org.apache.logging.log4j:log4j-api')
     compile('org.apache.logging.log4j:log4j-slf4j-impl')
-    compile('com.lmax:disruptor')
+    compile("com.lmax:disruptor:${disuptorVersion}")
 
     compile('com.github.spotbugs:spotbugs')
     compileOnly('org.projectlombok:lombok')

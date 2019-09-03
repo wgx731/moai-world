@@ -6,33 +6,34 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.7.RELEASE"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
     }
 }
 
 allprojects {
 
+    // NOTE: last checked date: 2019-09-03
     ext {
         projectGroup = 'com.github.wgx731'
-        projectVersion = '0.9.9.SNAPSHOT'
+        projectVersion = '1.0.0.SNAPSHOT'
 
         javaVersion = '1.8'
 
-        asciidoctorVersion = '1.5.9.2'
-        jacocoVersion = '0.8.3'
+        asciidoctorVersion = '1.6.1'
+        jacocoVersion = '0.8.4'
         spotbugsVersion = '3.1.12'
 
-        springBootVersion = '2.1.4.RELEASE'
-        apacheCommonLangVersion = '3.8.1'
-        jacksonVersion = '2.9.8'
-        lombokVersion = '1.18.6'
-        log4j2Version = '2.11.2'
-        javaxXmlJaxbVersion = '2.3.0'
+        springBootVersion = '2.1.7.RELEASE'
+        apacheCommonLangVersion = '3.9'
+        jacksonVersion = '2.9.9'
+        lombokVersion = '1.18.8'
+        log4j2Version = '2.12.1'
+        javaxXmlJaxbVersion = '2.3.1'
         disuptorVersion = '3.4.2'
 
         junitVersion = '4.12'
-        assertjVersion = '3.11.1'
-        mockitoVersion = '2.26.0'
+        assertjVersion = '3.13.2'
+        mockitoVersion = '3.0.0'
     }
 
     repositories {
@@ -62,7 +63,6 @@ allprojects {
             dependency "org.apache.logging.log4j:log4j-core:${log4j2Version}"
             dependency "org.apache.logging.log4j:log4j-api:${log4j2Version}"
             dependency "org.apache.logging.log4j:log4j-slf4j-impl:${log4j2Version}"
-            dependency "com.lmax:disruptor:${disuptorVersion}"
         }
     }
 
