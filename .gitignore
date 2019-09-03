@@ -203,4 +203,4 @@ hs_err_pid*
 ## Project.gitignore
 ###################################################
 .g8
-local/performance
+local/

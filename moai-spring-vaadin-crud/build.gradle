@@ -1,0 +1,59 @@
+buildscript {
+
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "org.asciidoctor:asciidoctor-gradle-plugin:${asciidoctorVersion}"
+    }
+
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'org.asciidoctor.convert'
+
+dependencyManagement {
+    imports {
+        mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
+        mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.vaadin:vaadin-spring-boot-starter'
+    implementation 'de.codecentric:spring-boot-admin-starter-client'
+    implementation 'org.flywaydb:flyway-core'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-webtestclient'
+}
+
+springBoot {
+    buildInfo()
+}
+
+bootJar {
+    baseName 'moai-spring-vaadin-crud'
+}
+
+asciidoctor {
+    sourceDir file('src/site/asciidoc')
+    outputDir file('build/docs/rest/output')
+    attributes 'snippets': file('build/docs/rest/source/snippets')
+}

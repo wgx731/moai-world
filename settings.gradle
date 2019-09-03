@@ -1,4 +1,5 @@
-rootProject.name = 'moai'
+rootProject.name = 'moai-world'
 
-include 'moai-java'
+include 'moai-java-threading'
+include 'moai-spring-vaadin-crud'
 

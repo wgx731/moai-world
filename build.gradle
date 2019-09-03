@@ -6,7 +6,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
+        // NOTE: last checked date: 2019-09-03
+        classpath 'io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE'
+        classpath 'gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:2.0.0'
+        classpath 'net.ltgt.gradle:gradle-apt-plugin:0.18'
+        classpath 'io.franzbecker:gradle-lombok:3.1.0'
     }
 }
 
@@ -17,7 +21,7 @@ allprojects {
         projectGroup = 'com.github.wgx731'
         projectVersion = '1.0.0.SNAPSHOT'
 
-        javaVersion = '1.8'
+        javaVersion = '12'
 
         asciidoctorVersion = '1.6.1'
         jacocoVersion = '0.8.4'
@@ -34,6 +38,8 @@ allprojects {
         junitVersion = '4.12'
         assertjVersion = '3.13.2'
         mockitoVersion = '3.0.0'
+        springBootAdminVersion = '2.1.5'
+        vaadinVersion = '14.0.2'
     }
 
     repositories {
@@ -41,7 +47,6 @@ allprojects {
     }
 
     apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'idea'
 
     group = "${projectGroup}"
     version = "${projectVersion}"
@@ -67,3 +72,105 @@ allprojects {
     }
 
 }
+
+subprojects {
+
+    repositories {
+        mavenCentral()
+    }
+
+    apply plugin: 'java'
+    apply plugin: 'net.ltgt.apt'
+    apply plugin: 'jacoco'
+    apply plugin: "com.github.spotbugs"
+    apply plugin: 'idea'
+    apply plugin: "io.franzbecker.gradle-lombok"
+
+    jar {
+        onlyIf { !sourceSets.main.allSource.files.isEmpty() }
+    }
+
+    jacoco {
+        toolVersion = "${jacocoVersion}"
+    }
+
+    spotbugs {
+        toolVersion = "${spotbugsVersion}"
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled false
+            html.enabled true
+            csv.enabled true
+        }
+        afterEvaluate {
+            getClassDirectories().setFrom(files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: [
+                        'com/github/wgx731/**/Main*',
+                        'com/github/wgx731/Main*'
+                ])
+            }))
+        }
+    }
+
+    jacocoTestCoverageVerification {
+        violationRules {
+            rule {
+                limit {
+                    minimum = 0.85
+                }
+            }
+        }
+        afterEvaluate {
+            getClassDirectories().setFrom(files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: [
+                        'com/github/wgx731/**/Main*',
+                        'com/github/wgx731/Main*'
+                ])
+            }))
+        }
+    }
+
+    sourceCompatibility = "${javaVersion}"
+    targetCompatibility = "${javaVersion}"
+
+    dependencies {
+        implementation 'com.github.spotbugs:spotbugs'
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation 'junit:junit'
+        testImplementation 'org.mockito:mockito-core'
+        testImplementation 'org.assertj:assertj-core'
+        testAnnotationProcessor 'org.projectlombok:lombok'
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:all,-processing"
+    }
+
+    lombok {
+        version = "${lombokVersion}"
+    }
+
+    task delombok(type: io.franzbecker.gradle.lombok.task.DelombokTask, dependsOn: compileJava) {
+        ext.outputDir = file("$buildDir/delombok")
+        outputs.dir(outputDir)
+        sourceSets.main.java.srcDirs.each {
+            inputs.dir(it)
+            args(it, "-d", outputDir)
+        }
+    }
+
+    javadoc {
+        dependsOn delombok
+        source = delombok.outputDir
+
+        options.locale = 'en_US'
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addBooleanOption('html5', true)
+        failOnError = false
+    }
+
+}
+

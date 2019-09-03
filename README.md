@@ -17,14 +17,9 @@ Moai World
 
 `./scripts/build-artifacts.sh`
 
-### Build docker images
+### Test Coverage
 
-`./scripts/build-images.sh`
-
-### Make release
-
-* update `RELEASE_VERSION` and `SNAPSHOT_VERSION` in `./scripts/config.sh`
-* `./scripts/make-release.sh`
+`./scripts/test-coverage.sh`
 
 ## Contributing
 
