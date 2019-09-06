@@ -3,11 +3,13 @@ package com.github.wgx731.ak47.vaadin.view;
 import com.github.wgx731.ak47.model.Photo;
 import com.github.wgx731.ak47.service.StorageService;
 import com.github.wgx731.ak47.vaadin.model.PagingParams;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -36,10 +38,13 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
     public static final String SIZE_PARAM_NAME = "size";
     public static final String SORT_PARAM_NAME = "sort";
 
-    private final StorageService service;
+    private StorageService service;
     private Map<String, List<String>> parametersMap;
 
+    private VerticalLayout headerLayout;
     private Grid<Photo> photoGrid;
+    private PhotoEditor editor;
+    private Button newPhotoBtn;
     private HorizontalLayout footerLayout;
 
     @Override
@@ -99,12 +104,32 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
 
     private void updateComponents() {
         this.removeAll();
-        this.add(new H1("List Photos Page"));
-        this.add(photoGrid);
-        this.add(footerLayout);
+        this.add(new H1("Photo List Page"));
+        this.add(this.headerLayout);
+        this.add(this.photoGrid);
+        this.add(this.footerLayout);
     }
 
     private void refreshData() {
+        this.headerLayout.removeAll();
+        this.newPhotoBtn = new Button("New photo", VaadinIcon.PLUS.create());
+        this.headerLayout.add(newPhotoBtn);
+        this.headerLayout.add(this.editor);
+        newPhotoBtn.addClickListener(e -> editor.editPhoto(new Photo()));
+
+        // Listen changes made by the editor, refresh data from backend
+        editor.setChangeHandler(() -> {
+            editor.setVisible(false);
+            PagingParams params = this.getPagingParams();
+            Page<Photo> data = this.service.listAllPhotosByPage(
+                PageRequest.of(
+                    params.getPageNum(),
+                    params.getPageSize(),
+                    Sort.by(params.getSortByKey())
+                )
+            );
+            this.photoGrid.setItems(data.stream());
+        });
         PagingParams params = this.getPagingParams();
         Page<Photo> data = this.service.listAllPhotosByPage(
             PageRequest.of(
@@ -114,6 +139,9 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
             )
         );
         this.photoGrid = new Grid<>();
+        this.photoGrid.asSingleSelect().addValueChangeListener(e -> {
+            editor.editPhoto(e.getValue());
+        });
         this.photoGrid.setItems(data.stream());
         this.photoGrid.addColumn(p -> p.getProject().getName()).setHeader("Project Name");
         this.photoGrid.addColumn(p -> p.getImageType()).setHeader("Image Type");
@@ -124,7 +152,7 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
             "preview photo"
         ))).setHeader("Preview");
         this.photoGrid.setMinHeight("600px");
-        this.footerLayout = new HorizontalLayout();
+        this.footerLayout.removeAll();
         if (data.hasPrevious()) {
             NativeButton button = new NativeButton(
                 "previous");
@@ -156,8 +184,11 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
         }
     }
 
-    public MainView(StorageService service) {
+    public MainView(StorageService service, PhotoEditor editor) {
         this.service = service;
+        this.editor = editor;
+        this.headerLayout = new VerticalLayout();
+        this.footerLayout = new HorizontalLayout();
     }
 
 }

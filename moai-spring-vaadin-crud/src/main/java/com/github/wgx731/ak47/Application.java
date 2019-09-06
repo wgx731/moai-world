@@ -1,7 +1,6 @@
 package com.github.wgx731.ak47;
 
 import com.github.wgx731.ak47.audit.AuditorAwareImpl;
-import com.github.wgx731.ak47.model.Photo;
 import com.github.wgx731.ak47.model.Project;
 import com.github.wgx731.ak47.repository.PhotoRepository;
 import com.github.wgx731.ak47.repository.ProjectRepository;
@@ -14,8 +13,6 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +39,7 @@ public class Application {
                 projectRepository.save(p);
                 projects.add(p);
             }
+            /*
             for (int i = 0; i < 3; i++) {
                 Project p = projects.get(i);
                 for (int j = 0; j < 20; j++) {
@@ -56,6 +54,7 @@ public class Application {
                     ));
                 }
             }
+            */
         };
     }
 
