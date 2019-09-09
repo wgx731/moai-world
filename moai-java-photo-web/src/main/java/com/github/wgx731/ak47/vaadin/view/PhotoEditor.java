@@ -15,6 +15,7 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import elemental.json.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,26 +32,24 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
         void onChange();
     }
 
-    private transient StorageService service;
     private transient ChangeHandler changeHandler;
+    private transient StorageService service;
     private transient Photo photo;
-
     private MemoryBuffer buffer = new MemoryBuffer();
 
-    ComboBox<Project> projectComboBox = new ComboBox<>("Project");
-    Upload image = new Upload(buffer);
-
-    Button save = new Button("Save", VaadinIcon.CHECK.create());
-    Button delete = new Button("Delete", VaadinIcon.TRASH.create());
-    HorizontalLayout actions = new HorizontalLayout(save, delete);
+    // UI
+    private ComboBox<Project> projectComboBox = new ComboBox<>("Project");
+    private Upload image = new Upload(buffer);
+    private Button save = new Button("Save", VaadinIcon.CHECK.create());
+    private Button delete = new Button("Delete", VaadinIcon.TRASH.create());
+    private Button close = new Button("Close", VaadinIcon.CLOSE.create());
+    private HorizontalLayout actions = new HorizontalLayout(save, delete, close);
 
     @Autowired
     public PhotoEditor(StorageService service) {
         this.service = service;
 
         projectComboBox.setItemLabelGenerator(Project::getName);
-        projectComboBox.setItems(this.service.listAllProjects());
-
         projectComboBox.addValueChangeListener(event -> {
             if (!event.getSource().isEmpty()) {
                 this.photo.setProject(event.getValue());
@@ -74,18 +73,19 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
             }
         });
 
-        add(projectComboBox, image, actions);
-
         setSpacing(true);
-
         save.getElement().getThemeList().add("primary");
         delete.getElement().getThemeList().add("error");
-
+        close.getElement().getThemeList().add("secondary");
         addKeyPressListener(Key.ENTER, e -> save());
-
         save.addClickListener(e -> save());
         delete.addClickListener(e -> delete());
+        close.addClickListener(e -> setVisible(false));
+
+        add(projectComboBox, image, actions);
+
         setVisible(false);
+
     }
 
     void delete() {
@@ -106,14 +106,19 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
             setVisible(false);
             return;
         }
+        projectComboBox.setItems(this.service.listAllProjects());
+        image.getElement().setPropertyJson("files", Json.createArray());
         final boolean persisted = photo.getId() != null;
         if (persisted) {
             this.photo = this.service.getPhotoById(photo.getId()).get();
+            projectComboBox.setValue(this.photo.getProject());
+            this.close.setVisible(false);
+            this.delete.setVisible(true);
         } else {
             this.photo = photo;
+            this.close.setVisible(true);
+            this.delete.setVisible(false);
         }
-
-        projectComboBox.setValue(this.photo.getProject());
         setVisible(true);
         projectComboBox.focus();
     }

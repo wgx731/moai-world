@@ -40,6 +40,7 @@ allprojects {
         mockitoVersion = '3.0.0'
         springBootAdminVersion = '2.1.5'
         vaadinVersion = '14.0.2'
+        kaributestingVersion = '1.1.9'
     }
 
     repositories {
@@ -68,6 +69,7 @@ allprojects {
             dependency "org.apache.logging.log4j:log4j-core:${log4j2Version}"
             dependency "org.apache.logging.log4j:log4j-api:${log4j2Version}"
             dependency "org.apache.logging.log4j:log4j-slf4j-impl:${log4j2Version}"
+            dependency "com.github.mvysny.kaributesting:karibu-testing-v10:${kaributestingVersion}"
         }
     }
 
@@ -77,6 +79,7 @@ subprojects {
 
     repositories {
         mavenCentral()
+        jcenter()
     }
 
     apply plugin: 'java'

@@ -46,5 +46,4 @@ public class StorageService {
         photoRepository.deleteById(photo.getId());
     }
 
-
 }

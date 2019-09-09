@@ -5,7 +5,6 @@ import com.github.wgx731.ak47.service.StorageService;
 import com.github.wgx731.ak47.vaadin.model.PagingParams;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.html.Paragraph;
@@ -29,6 +28,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Route
 @Slf4j
@@ -42,6 +42,7 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
 
     private transient StorageService service;
     private Map<String, List<String>> parametersMap;
+    private Page<Photo> data;
 
     private VerticalLayout headerLayout;
     private Grid<Photo> photoGrid;
@@ -101,60 +102,14 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
         map.put(SIZE_PARAM_NAME, Arrays.asList(sizes));
         map.put(SORT_PARAM_NAME, Arrays.asList(orderings));
         return new QueryParameters(map);
-
     }
 
     private void updateComponents() {
-        this.removeAll();
-        this.add(new H1("Photo List Page"));
-        this.add(this.headerLayout);
-        this.add(this.photoGrid);
-        this.add(this.footerLayout);
-    }
+        this.photoGrid.setItems(this.data.stream());
+        this.photoGrid.recalculateColumnWidths();
 
-    private void refreshData() {
-        this.headerLayout.removeAll();
-        this.newPhotoBtn = new Button("New photo", VaadinIcon.PLUS.create());
-        this.headerLayout.add(newPhotoBtn);
-        this.headerLayout.add(this.editor);
-        newPhotoBtn.addClickListener(e -> editor.editPhoto(new Photo()));
-
-        // Listen changes made by the editor, refresh data from backend
-        editor.setChangeHandler(() -> {
-            editor.setVisible(false);
-            PagingParams params = this.getPagingParams();
-            Page<Photo> data = this.service.listAllPhotosByPage(
-                PageRequest.of(
-                    params.getPageNum(),
-                    params.getPageSize(),
-                    Sort.by(params.getSortByKey())
-                )
-            );
-            this.photoGrid.setItems(data.stream());
-        });
-        PagingParams params = this.getPagingParams();
-        Page<Photo> data = this.service.listAllPhotosByPage(
-            PageRequest.of(
-                params.getPageNum(),
-                params.getPageSize(),
-                Sort.by(params.getSortByKey())
-            )
-        );
-        this.photoGrid = new Grid<>();
-        this.photoGrid.asSingleSelect().addValueChangeListener(e -> {
-            editor.editPhoto(e.getValue());
-        });
-        this.photoGrid.setItems(data.stream());
-        this.photoGrid.addColumn(p -> p.getProject().getName()).setHeader("Project Name");
-        this.photoGrid.addColumn(p -> p.getImageType()).setHeader("Image Type");
-        this.photoGrid.addColumn(p -> p.getStatus()).setHeader("Image Status");
-        this.photoGrid.addColumn(p -> p.getUploader()).setHeader("Uploader");
-        this.photoGrid.addColumn(new ComponentRenderer<>(p -> new Image(
-            new StreamResource(String.format("photo %d", p.getId()), () -> new ByteArrayInputStream(p.getData())),
-            "preview photo"
-        ))).setHeader("Preview");
-        this.photoGrid.setMinHeight("600px");
         this.footerLayout.removeAll();
+        PagingParams params = this.getPagingParams();
         if (data.hasPrevious()) {
             NativeButton button = new NativeButton(
                 "previous");
@@ -186,11 +141,52 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
         }
     }
 
+    private void refreshData() {
+        PagingParams params = this.getPagingParams();
+        this.data = this.service.listAllPhotosByPage(
+            PageRequest.of(
+                params.getPageNum(),
+                params.getPageSize(),
+                Sort.by(params.getSortByKey())
+            )
+        );
+    }
+
     public MainView(StorageService service, PhotoEditor editor) {
         this.service = service;
+
         this.editor = editor;
-        this.headerLayout = new VerticalLayout();
+        this.editor.setChangeHandler(() -> {
+            this.editor.setVisible(false);
+            this.refreshData();
+            this.updateComponents();
+        });
+
+        this.photoGrid = new Grid<>();
+        this.photoGrid.asSingleSelect().addValueChangeListener(e -> {
+            if (Objects.isNull(e.getValue())) {
+                this.newPhotoBtn.setEnabled(true);
+            } else {
+                this.newPhotoBtn.setEnabled(false);
+            }
+            this.editor.editPhoto(e.getValue());
+        });
+        this.photoGrid.addColumn(p -> p.getProject().getName()).setHeader("Project Name");
+        this.photoGrid.addColumn(p -> p.getImageType()).setHeader("Image Type");
+        this.photoGrid.addColumn(p -> p.getStatus()).setHeader("Image Status");
+        this.photoGrid.addColumn(p -> p.getUploader()).setHeader("Uploader");
+        this.photoGrid.addColumn(new ComponentRenderer<>(p -> new Image(
+            new StreamResource(String.format("photo %d", p.getId()), () -> new ByteArrayInputStream(p.getData())),
+            "preview photo"
+        ))).setHeader("Preview");
+
+        this.newPhotoBtn = new Button("New photo", VaadinIcon.PLUS.create());
+        this.newPhotoBtn.addClickListener(e -> editor.editPhoto(new Photo()));
+
+        this.headerLayout = new VerticalLayout(this.newPhotoBtn, this.editor);
+
         this.footerLayout = new HorizontalLayout();
+        this.add(this.headerLayout, this.photoGrid, this.footerLayout);
     }
 
 }

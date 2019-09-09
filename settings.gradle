@@ -2,4 +2,3 @@ rootProject.name = 'moai-world'
 
 include 'moai-java-threading'
 include 'moai-java-photo-web'
-
