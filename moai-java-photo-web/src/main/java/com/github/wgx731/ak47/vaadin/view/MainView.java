@@ -34,11 +34,13 @@ import java.util.Map;
 @Slf4j
 public class MainView extends VerticalLayout implements HasUrlParameter<String> {
 
+    private static final long serialVersionUID = -2519398887123033381L;
+
     public static final String PAGE_PARAM_NAME = "page";
     public static final String SIZE_PARAM_NAME = "size";
     public static final String SORT_PARAM_NAME = "sort";
 
-    private StorageService service;
+    private transient StorageService service;
     private Map<String, List<String>> parametersMap;
 
     private VerticalLayout headerLayout;
@@ -59,7 +61,7 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
         String sortBy = "id";
         if (this.parametersMap.containsKey(PAGE_PARAM_NAME)) {
             try {
-                pageNum = Integer.valueOf(
+                pageNum = Integer.parseInt(
                     this.parametersMap.get(PAGE_PARAM_NAME).get(0))
                 ;
             } catch (NumberFormatException e) {
@@ -68,7 +70,7 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
         }
         if (this.parametersMap.containsKey(SIZE_PARAM_NAME)) {
             try {
-                size = Integer.valueOf(
+                size = Integer.parseInt(
                     this.parametersMap.get(SIZE_PARAM_NAME).get(0))
                 ;
             } catch (NumberFormatException e) {

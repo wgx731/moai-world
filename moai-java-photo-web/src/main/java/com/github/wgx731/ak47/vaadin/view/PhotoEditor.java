@@ -25,13 +25,16 @@ import java.io.IOException;
 @Slf4j
 public class PhotoEditor extends VerticalLayout implements KeyNotifier {
 
+    private static final long serialVersionUID = 6716807453282399652L;
+
     public interface ChangeHandler {
         void onChange();
     }
 
-    private final StorageService service;
+    private transient StorageService service;
+    private transient ChangeHandler changeHandler;
+    private transient Photo photo;
 
-    private Photo photo;
     private MemoryBuffer buffer = new MemoryBuffer();
 
     ComboBox<Project> projectComboBox = new ComboBox<>("Project");
@@ -40,8 +43,6 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
     Button save = new Button("Save", VaadinIcon.CHECK.create());
     Button delete = new Button("Delete", VaadinIcon.TRASH.create());
     HorizontalLayout actions = new HorizontalLayout(save, delete);
-
-    private ChangeHandler changeHandler;
 
     @Autowired
     public PhotoEditor(StorageService service) {

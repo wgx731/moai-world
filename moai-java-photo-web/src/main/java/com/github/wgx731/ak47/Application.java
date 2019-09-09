@@ -13,9 +13,6 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @SpringBootApplication
 @EnableJpaRepositories
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
@@ -32,29 +29,11 @@ public class Application {
     @Bean
     public CommandLineRunner loadData(PhotoRepository photoRepository, ProjectRepository projectRepository) {
         return (args) -> {
-            List<Project> projects = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
                 Project p = new Project();
                 p.setName(String.format("project %d", i));
                 projectRepository.save(p);
-                projects.add(p);
             }
-            /*
-            for (int i = 0; i < 3; i++) {
-                Project p = projects.get(i);
-                for (int j = 0; j < 20; j++) {
-                    photoRepository.save(new Photo(
-                        p,
-                        Photo.ProcessStatus.UPLOADED,
-                        Files.readAllBytes(Paths.get("/tmp", "icon.png")),
-                        "png",
-                        "wgx",
-                        "s1",
-                        String.format("file:///s1/tmp/photo%d.png", j)
-                    ));
-                }
-            }
-            */
         };
     }
 
