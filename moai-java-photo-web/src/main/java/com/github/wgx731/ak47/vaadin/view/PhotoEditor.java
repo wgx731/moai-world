@@ -35,19 +35,26 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
     private transient ChangeHandler changeHandler;
     private transient StorageService service;
     private transient Photo photo;
-    private MemoryBuffer buffer = new MemoryBuffer();
+    private MemoryBuffer buffer;
 
     // UI
-    private ComboBox<Project> projectComboBox = new ComboBox<>("Project");
-    private Upload image = new Upload(buffer);
-    private Button save = new Button("Save", VaadinIcon.CHECK.create());
-    private Button delete = new Button("Delete", VaadinIcon.TRASH.create());
-    private Button close = new Button("Close", VaadinIcon.CLOSE.create());
-    private HorizontalLayout actions = new HorizontalLayout(save, delete, close);
+    private ComboBox<Project> projectComboBox;
+    private Upload image;
+    private Button save;
+    private Button delete;
+    private Button close;
+    private HorizontalLayout actions;
 
     @Autowired
     public PhotoEditor(StorageService service) {
         this.service = service;
+        this.buffer = new MemoryBuffer();
+        this.image = new Upload(buffer);
+        this.save = new Button("Save", VaadinIcon.CHECK.create());
+        this.delete = new Button("Delete", VaadinIcon.TRASH.create());
+        this.close = new Button("Close", VaadinIcon.CLOSE.create());
+        this.actions = new HorizontalLayout(save, delete, close);
+        this.projectComboBox = new ComboBox<>("Project");
 
         projectComboBox.setItemLabelGenerator(Project::getName);
         projectComboBox.addValueChangeListener(event -> {
@@ -85,7 +92,23 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
         add(projectComboBox, image, actions);
 
         setVisible(false);
+    }
 
+    PhotoEditor(
+        StorageService service,
+        ChangeHandler handler,
+        ComboBox<Project> comboBox,
+        Upload image,
+        Button close,
+        Button delete
+    ) {
+        this.service = service;
+        this.changeHandler = handler;
+        this.projectComboBox = comboBox;
+        this.image = image;
+        this.close = close;
+        this.delete = delete;
+        this.photo = new Photo();
     }
 
     void delete() {

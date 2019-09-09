@@ -35,7 +35,7 @@ allprojects {
         javaxXmlJaxbVersion = '2.3.1'
         disuptorVersion = '3.4.2'
 
-        junitVersion = '4.12'
+        junitVersion = '5.5.1'
         assertjVersion = '3.13.2'
         mockitoVersion = '3.0.0'
         springBootAdminVersion = '2.1.5'
@@ -61,7 +61,7 @@ allprojects {
 
             dependency "com.github.spotbugs:spotbugs:${spotbugsVersion}"
             dependency "org.projectlombok:lombok:${lombokVersion}"
-            dependency "junit:junit:${junitVersion}"
+            dependency "org.junit.jupiter:junit-jupiter:${junitVersion}"
             dependency "org.mockito:mockito-core:${mockitoVersion}"
             dependency "org.assertj:assertj-core:${assertjVersion}"
             dependency "org.apache.commons:commons-lang3:${apacheCommonLangVersion}"
@@ -142,7 +142,7 @@ subprojects {
         implementation 'com.github.spotbugs:spotbugs'
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
-        testImplementation 'junit:junit'
+        testImplementation 'org.junit.jupiter:junit-jupiter'
         testImplementation 'org.mockito:mockito-core'
         testImplementation 'org.assertj:assertj-core'
         testAnnotationProcessor 'org.projectlombok:lombok'
@@ -173,6 +173,13 @@ subprojects {
         options.addStringOption('Xdoclint:none', '-quiet')
         options.addBooleanOption('html5', true)
         failOnError = false
+    }
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
     }
 
 }
