@@ -13,12 +13,12 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication
 @EnableJpaRepositories
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EntityScan(basePackages = {
     "com.github.wgx731.ak47.model"
 })
+@SpringBootApplication
 public class Application {
 
     @Bean

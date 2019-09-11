@@ -1,10 +1,12 @@
 package com.github.wgx731.ak47.vaadin.view;
 
+import com.github.wgx731.ak47.model.Photo;
 import com.github.wgx731.ak47.model.Project;
 import com.github.wgx731.ak47.service.StorageService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.dom.Element;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -77,6 +81,34 @@ class PhotoEditorTest {
     public void photoNullNotShownTest() {
         testCase.editPhoto(null);
         assertThat(testCase.isVisible()).isFalse();
+    }
+
+    @Test
+    @DisplayName("edit photo when photo not saved")
+    public void photoNotSavedTest() {
+        Mockito.when(image.getElement()).thenReturn(Mockito.mock(Element.class));
+        testCase.editPhoto(new Photo());
+        assertThat(testCase.isVisible()).isTrue();
+        Mockito.verify(service, Mockito.times(0)).getPhotoById(Mockito.anyLong());
+        Mockito.verify(service, Mockito.times(1)).listAllProjects();
+        Mockito.verify(close, Mockito.times(1)).setVisible(true);
+        Mockito.verify(delete, Mockito.times(1)).setVisible(false);
+    }
+
+    @Test
+    @DisplayName("edit photo when photo saved")
+    public void photoSavedTest() {
+        final Long id = 100L;
+        Mockito.when(image.getElement()).thenReturn(Mockito.mock(Element.class));
+        Photo photo = new Photo();
+        Mockito.when(service.getPhotoById(id)).thenReturn(Optional.of(photo));
+        photo.setId(id);
+        testCase.editPhoto(photo);
+        assertThat(testCase.isVisible()).isTrue();
+        Mockito.verify(service, Mockito.times(1)).getPhotoById(id);
+        Mockito.verify(service, Mockito.times(1)).listAllProjects();
+        Mockito.verify(close, Mockito.times(1)).setVisible(false);
+        Mockito.verify(delete, Mockito.times(1)).setVisible(true);
     }
 
 }

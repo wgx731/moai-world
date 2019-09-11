@@ -8,10 +8,12 @@ import java.util.Optional;
 @Component
 public class AuditorAwareImpl implements AuditorAware<String> {
 
+    public static final String AUDITOR = "auditor";
+
     // TODO: change user to current login user
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.of("auditor");
+        return Optional.of(AUDITOR);
     }
 
 }

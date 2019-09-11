@@ -107,32 +107,6 @@ subprojects {
             html.enabled true
             csv.enabled true
         }
-        afterEvaluate {
-            getClassDirectories().setFrom(files(classDirectories.files.collect {
-                fileTree(dir: it, exclude: [
-                        'com/github/wgx731/**/Main*',
-                        'com/github/wgx731/Main*'
-                ])
-            }))
-        }
-    }
-
-    jacocoTestCoverageVerification {
-        violationRules {
-            rule {
-                limit {
-                    minimum = 0.85
-                }
-            }
-        }
-        afterEvaluate {
-            getClassDirectories().setFrom(files(classDirectories.files.collect {
-                fileTree(dir: it, exclude: [
-                        'com/github/wgx731/**/Main*',
-                        'com/github/wgx731/Main*'
-                ])
-            }))
-        }
     }
 
     sourceCompatibility = "${javaVersion}"
@@ -173,13 +147,6 @@ subprojects {
         options.addStringOption('Xdoclint:none', '-quiet')
         options.addBooleanOption('html5', true)
         failOnError = false
-    }
-
-    test {
-        useJUnitPlatform()
-        testLogging {
-            events "passed", "skipped", "failed"
-        }
     }
 
 }

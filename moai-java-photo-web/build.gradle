@@ -32,6 +32,7 @@ dependencyManagement {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.vaadin:vaadin-spring-boot-starter'
     implementation 'de.codecentric:spring-boot-admin-starter-client'
     runtimeOnly 'com.h2database:h2'
@@ -47,4 +48,29 @@ springBoot {
 
 bootJar {
     baseName 'moai-java-photo-web'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.4
+            }
+        }
+    }
+    afterEvaluate {
+        getClassDirectories().setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    'com/github/wgx731/ak47/Application*',
+                    'com/github/wgx731/ak47/service/*',
+            ])
+        }))
+    }
 }

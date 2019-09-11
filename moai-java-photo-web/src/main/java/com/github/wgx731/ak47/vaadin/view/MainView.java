@@ -19,6 +19,7 @@ import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -39,16 +40,19 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
     public static final String PAGE_PARAM_NAME = "page";
     public static final String SIZE_PARAM_NAME = "size";
     public static final String SORT_PARAM_NAME = "sort";
+    public static final int DEFAULT_PAGE_NUM = 0;
+    public static final int DEFAULT_PAGE_SIZE = 20;
+    public static final String DEFAULT_SORT_KEY = "id";
 
-    private transient StorageService service;
-    private Map<String, List<String>> parametersMap;
-    private Page<Photo> data;
+    transient StorageService service;
+    Map<String, List<String>> parametersMap;
+    Page<Photo> data;
 
-    private VerticalLayout headerLayout;
-    private Grid<Photo> photoGrid;
-    private PhotoEditor editor;
-    private Button newPhotoBtn;
-    private HorizontalLayout footerLayout;
+    VerticalLayout headerLayout;
+    Grid<Photo> photoGrid;
+    PhotoEditor editor;
+    Button newPhotoBtn;
+    HorizontalLayout footerLayout;
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
@@ -57,9 +61,9 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
         updateComponents();
     }
 
-    private PagingParams getPagingParams() {
-        int pageNum = 0, size = 20;
-        String sortBy = "id";
+    PagingParams getPagingParams() {
+        int pageNum = DEFAULT_PAGE_NUM, size = DEFAULT_PAGE_SIZE;
+        String sortBy = DEFAULT_SORT_KEY;
         if (this.parametersMap.containsKey(PAGE_PARAM_NAME)) {
             try {
                 pageNum = Integer.parseInt(
@@ -92,7 +96,7 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
             .build();
     }
 
-    private QueryParameters getQueryParameters(int pageDiff) {
+    QueryParameters getQueryParameters(int pageDiff) {
         PagingParams params = this.getPagingParams();
         Map<String, List<String>> map = new HashMap<>();
         String[] sizes = {String.format("%d", params.getPageSize())};
@@ -104,7 +108,7 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
         return new QueryParameters(map);
     }
 
-    private void updateComponents() {
+    void updateComponents() {
         this.photoGrid.setItems(this.data.stream());
         this.photoGrid.recalculateColumnWidths();
 
@@ -141,7 +145,7 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
         }
     }
 
-    private void refreshData() {
+    void refreshData() {
         PagingParams params = this.getPagingParams();
         this.data = this.service.listAllPhotosByPage(
             PageRequest.of(
@@ -152,6 +156,7 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
         );
     }
 
+    @Autowired
     public MainView(StorageService service, PhotoEditor editor) {
         this.service = service;
 
@@ -187,6 +192,19 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
 
         this.footerLayout = new HorizontalLayout();
         this.add(this.headerLayout, this.photoGrid, this.footerLayout);
+    }
+
+    MainView(
+        StorageService service,
+        PhotoEditor editor,
+        Grid<Photo> grid,
+        HorizontalLayout footerLayout
+    ) {
+        this.service = service;
+        this.editor = editor;
+        this.photoGrid = grid;
+        this.footerLayout = footerLayout;
+        this.parametersMap = new HashMap<>();
     }
 
 }
