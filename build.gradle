@@ -39,7 +39,7 @@ allprojects {
         assertjVersion = '3.13.2'
         mockitoVersion = '3.0.0'
         springBootAdminVersion = '2.1.5'
-        vaadinVersion = '14.0.2'
+        vaadinVersion = '14.0.4'
         kaributestingVersion = '1.1.9'
     }
 

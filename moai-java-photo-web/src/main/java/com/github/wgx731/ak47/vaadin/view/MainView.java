@@ -52,6 +52,7 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
     Grid<Photo> photoGrid;
     PhotoEditor editor;
     Button newPhotoBtn;
+    Button logOutBtn;
     HorizontalLayout footerLayout;
 
     @Override
@@ -188,7 +189,17 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
         this.newPhotoBtn = new Button("New photo", VaadinIcon.PLUS.create());
         this.newPhotoBtn.addClickListener(e -> editor.editPhoto(new Photo()));
 
-        this.headerLayout = new VerticalLayout(this.newPhotoBtn, this.editor);
+        this.logOutBtn = new Button("Log out", VaadinIcon.SIGN_OUT.create());
+        this.logOutBtn.addClickListener(e ->
+            this.logOutBtn.getUI().ifPresent(ui ->
+                ui.getPage().setLocation("/logout")
+            )
+        );
+
+        this.headerLayout = new VerticalLayout(new HorizontalLayout(
+            this.newPhotoBtn,
+            this.logOutBtn
+        ), this.editor);
 
         this.footerLayout = new HorizontalLayout();
         this.add(this.headerLayout, this.photoGrid, this.footerLayout);

@@ -2,6 +2,7 @@ package com.github.wgx731.ak47.vaadin.view;
 
 import com.github.wgx731.ak47.model.Photo;
 import com.github.wgx731.ak47.model.Project;
+import com.github.wgx731.ak47.security.SecurityUtils;
 import com.github.wgx731.ak47.service.StorageService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
@@ -118,8 +119,7 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
 
     void save() {
         photo.setStatus(Photo.ProcessStatus.UPLOADED);
-        // TODO: change to current log in user
-        photo.setUploader("wgx");
+        photo.setUploader(SecurityUtils.getCurrentUser());
         this.service.save(photo);
         changeHandler.onChange();
     }
