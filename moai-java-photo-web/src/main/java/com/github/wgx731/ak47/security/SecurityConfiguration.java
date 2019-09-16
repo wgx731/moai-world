@@ -58,7 +58,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             // Restrict access to our application.
             .and().authorizeRequests()
             // Allow all flow internal requests.
-            .requestMatchers(request -> securityUtils.isFrameworkInternalRequest(request)).permitAll()
+            .requestMatchers(securityUtils::isFrameworkInternalRequest).permitAll()
             // Allow all actuator requests.
             .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
             // Allow all requests by logged in users.
@@ -104,21 +104,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        /*
-        auth
-            .inMemoryAuthentication()
-            .withUser("user").password("password").roles("USER")
-            .and()
-            .withUser("admin").password("admin").roles("ADMIN");
-         */
-        auth
-            .ldapAuthentication()
+        // ldap auth
+        auth.ldapAuthentication()
             .contextSource()
             .url(ldapUrls + ldapBaseDn)
             .managerDn(ldapSecurityPrincipal)
             .managerPassword(ldapPrincipalPassword)
             .and()
             .userDnPatterns(ldapUserDnPattern);
+        // in memory auth
+        auth.inMemoryAuthentication()
+            .withUser("user")
+            .password("{sha256}97cde38028ad898ebc02e690819fa220e88c62e0699403e94fff291cfffaf8410849f27605abcbc0")
+            .roles("USER")
+            .and()
+            .withUser("admin")
+            .password("{sha256}97cde38028ad898ebc02e690819fa220e88c62e0699403e94fff291cfffaf8410849f27605abcbc0")
+            .roles("ADMIN");
     }
 
 }
