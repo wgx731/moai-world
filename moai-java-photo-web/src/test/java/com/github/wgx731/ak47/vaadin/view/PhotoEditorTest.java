@@ -2,6 +2,7 @@ package com.github.wgx731.ak47.vaadin.view;
 
 import com.github.wgx731.ak47.model.Photo;
 import com.github.wgx731.ak47.model.Project;
+import com.github.wgx731.ak47.security.SecurityUtils;
 import com.github.wgx731.ak47.service.StorageService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -24,6 +25,8 @@ class PhotoEditorTest {
     @Mock
     private StorageService service;
     @Mock
+    private SecurityUtils securityUtils;
+    @Mock
     private PhotoEditor.ChangeHandler changeHandler;
     @Mock
     private ComboBox<Project> comboBox;
@@ -41,6 +44,7 @@ class PhotoEditorTest {
         MockitoAnnotations.initMocks(this);
         testCase = new PhotoEditor(
             service,
+            securityUtils,
             changeHandler,
             comboBox,
             image,
@@ -71,8 +75,10 @@ class PhotoEditorTest {
     @Test
     @DisplayName("save photo")
     public void savePhotoTest() {
+        Mockito.when(securityUtils.getCurrentUser()).thenReturn("tester");
         testCase.save();
         Mockito.verify(service, Mockito.times(1)).save(Mockito.any());
+        Mockito.verify(securityUtils, Mockito.times(1)).getCurrentUser();
         Mockito.verify(changeHandler, Mockito.times(1)).onChange();
     }
 

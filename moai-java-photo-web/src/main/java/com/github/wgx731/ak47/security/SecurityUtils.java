@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
@@ -16,11 +17,8 @@ import java.util.stream.Stream;
  * security and querying rights from different beans of the UI.
  */
 @Slf4j
+@Component
 public class SecurityUtils {
-
-    private SecurityUtils() {
-        // Util methods only
-    }
 
     /**
      * Tests if the request is an internal framework request. The test consists of
@@ -30,7 +28,7 @@ public class SecurityUtils {
      * @param request {@link HttpServletRequest}
      * @return true if is an internal framework request. False otherwise.
      */
-    public static boolean isFrameworkInternalRequest(HttpServletRequest request) {
+    public boolean isFrameworkInternalRequest(HttpServletRequest request) {
         final String parameterValue = request.getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER);
         return parameterValue != null
             && Stream.of(ServletHelper.RequestType.values()).anyMatch(r -> r.getIdentifier().equals(parameterValue));
@@ -40,14 +38,14 @@ public class SecurityUtils {
      * Tests if some user is authenticated. As Spring Security always will create an {@link AnonymousAuthenticationToken}
      * we have to ignore those tokens explicitly.
      */
-    public static boolean isUserLoggedIn() {
+    public boolean isUserLoggedIn() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null
             && !(authentication instanceof AnonymousAuthenticationToken)
             && authentication.isAuthenticated();
     }
 
-    public static String getCurrentUser() {
+    public String getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (Objects.isNull(authentication)) {
             return "NON_LOGGED_IN_USER";

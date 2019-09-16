@@ -73,6 +73,9 @@ jacocoTestCoverageVerification {
             fileTree(dir: it, exclude: [
                     'com/github/wgx731/ak47/Application*',
                     'com/github/wgx731/ak47/service/*',
+                    'com/github/wgx731/ak47/security/*',
+                    'com/github/wgx731/ak47/config/*',
+                    'com/github/wgx731/ak47/vaadin/config/*',
             ])
         }))
     }

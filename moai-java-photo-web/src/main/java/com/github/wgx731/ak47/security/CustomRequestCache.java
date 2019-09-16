@@ -1,6 +1,11 @@
 package com.github.wgx731.ak47.security;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,7 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * HttpSessionRequestCache that avoids saving internal framework requests.
  */
-class CustomRequestCache extends HttpSessionRequestCache {
+@Component
+@Slf4j
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class CustomRequestCache extends HttpSessionRequestCache {
+
+    @NonNull
+    private SecurityUtils securityUtils;
+
     /**
      * {@inheritDoc}
      * <p>
@@ -19,7 +31,7 @@ class CustomRequestCache extends HttpSessionRequestCache {
      */
     @Override
     public void saveRequest(HttpServletRequest request, HttpServletResponse response) {
-        if (!SecurityUtils.isFrameworkInternalRequest(request)) {
+        if (!securityUtils.isFrameworkInternalRequest(request)) {
             super.saveRequest(request, response);
         }
     }

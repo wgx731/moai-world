@@ -1,5 +1,9 @@
 package com.github.wgx731.ak47.security;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +15,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @EnableWebSecurity
 @Configuration
+@Slf4j
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String LOGIN_PROCESSING_URL = "/login";
@@ -33,8 +39,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${ldap.user.dn.pattern}")
     private String ldapUserDnPattern;
 
-    @Value("${ldap.enabled}")
-    private String ldapEnabled;
+    @NonNull
+    private SecurityUtils securityUtils;
+
+    @NonNull
+    private CustomRequestCache customRequestCache;
 
     /**
      * Require login to access internal pages and configure login form.
@@ -45,11 +54,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
             // Register our CustomRequestCache, that saves unauthorized access attempts, so
             // the user is redirected after login.
-            .requestCache().requestCache(new CustomRequestCache())
+            .requestCache().requestCache(customRequestCache)
             // Restrict access to our application.
             .and().authorizeRequests()
             // Allow all flow internal requests.
-            .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
+            .requestMatchers(request -> securityUtils.isFrameworkInternalRequest(request)).permitAll()
             // Allow all actuator requests.
             .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
             // Allow all requests by logged in users.
@@ -95,22 +104,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        if (Boolean.parseBoolean(ldapEnabled)) {
-            auth
-                .ldapAuthentication()
-                .contextSource()
-                .url(ldapUrls + ldapBaseDn)
-                .managerDn(ldapSecurityPrincipal)
-                .managerPassword(ldapPrincipalPassword)
-                .and()
-                .userDnPatterns(ldapUserDnPattern);
-        } else {
-            auth
-                .inMemoryAuthentication()
-                .withUser("user").password("password").roles("USER")
-                .and()
-                .withUser("admin").password("admin").roles("ADMIN");
-        }
+        /*
+        auth
+            .inMemoryAuthentication()
+            .withUser("user").password("password").roles("USER")
+            .and()
+            .withUser("admin").password("admin").roles("ADMIN");
+         */
+        auth
+            .ldapAuthentication()
+            .contextSource()
+            .url(ldapUrls + ldapBaseDn)
+            .managerDn(ldapSecurityPrincipal)
+            .managerPassword(ldapPrincipalPassword)
+            .and()
+            .userDnPatterns(ldapUserDnPattern);
     }
 
 }

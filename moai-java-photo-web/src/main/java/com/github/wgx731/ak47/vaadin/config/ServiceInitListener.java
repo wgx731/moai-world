@@ -6,12 +6,21 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ServiceInitListener implements VaadinServiceInitListener {
 
     private static final long serialVersionUID = -92838382562947633L;
+
+    @NonNull
+    private SecurityUtils securityUtils;
 
     @Override
     public void serviceInit(ServiceInitEvent event) {
@@ -28,7 +37,7 @@ public class ServiceInitListener implements VaadinServiceInitListener {
      */
     private void beforeEnter(BeforeEnterEvent event) {
         if (!LoginView.class.equals(event.getNavigationTarget())
-            && !SecurityUtils.isUserLoggedIn()) {
+            && !securityUtils.isUserLoggedIn()) {
             event.rerouteTo(LoginView.class);
         }
     }

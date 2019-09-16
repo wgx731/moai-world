@@ -17,6 +17,7 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.StreamResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,11 @@ import java.util.Objects;
 
 @Route
 @Slf4j
+@PWA(
+    name = "spring vaadin photo app",
+    shortName = "SVPA",
+    description = "A demo photo upload app build with spring and vaadin"
+)
 public class MainView extends VerticalLayout implements HasUrlParameter<String> {
 
     private static final long serialVersionUID = -2519398887123033381L;

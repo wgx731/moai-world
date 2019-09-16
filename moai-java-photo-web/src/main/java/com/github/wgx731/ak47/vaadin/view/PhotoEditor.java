@@ -35,6 +35,7 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
 
     private transient ChangeHandler changeHandler;
     private transient StorageService service;
+    private transient SecurityUtils securityUtils;
     private transient Photo photo;
     private MemoryBuffer buffer;
 
@@ -47,7 +48,8 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
     private HorizontalLayout actions;
 
     @Autowired
-    public PhotoEditor(StorageService service) {
+    public PhotoEditor(StorageService service, SecurityUtils securityUtils) {
+        this.securityUtils = securityUtils;
         this.service = service;
         this.buffer = new MemoryBuffer();
         this.image = new Upload(buffer);
@@ -97,6 +99,7 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
 
     PhotoEditor(
         StorageService service,
+        SecurityUtils securityUtils,
         ChangeHandler handler,
         ComboBox<Project> comboBox,
         Upload image,
@@ -104,6 +107,7 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
         Button delete
     ) {
         this.service = service;
+        this.securityUtils = securityUtils;
         this.changeHandler = handler;
         this.projectComboBox = comboBox;
         this.image = image;
@@ -119,7 +123,7 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
 
     void save() {
         photo.setStatus(Photo.ProcessStatus.UPLOADED);
-        photo.setUploader(SecurityUtils.getCurrentUser());
+        photo.setUploader(securityUtils.getCurrentUser());
         this.service.save(photo);
         changeHandler.onChange();
     }
