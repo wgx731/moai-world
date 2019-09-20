@@ -23,7 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PhotoEditorTest {
 
     @Mock
-    private StorageService service;
+    private StorageService storageService;
+    @Mock
+    private MessageService messageService;
     @Mock
     private SecurityUtils securityUtils;
     @Mock
@@ -43,7 +45,8 @@ class PhotoEditorTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
         testCase = new PhotoEditor(
-            service,
+            storageService,
+            messageService,
             securityUtils,
             changeHandler,
             comboBox,
@@ -55,7 +58,8 @@ class PhotoEditorTest {
 
     @AfterEach
     void tearDown() {
-        service = null;
+        storageService = null;
+        messageService = null;
         changeHandler = null;
         comboBox = null;
         image = null;
@@ -68,7 +72,7 @@ class PhotoEditorTest {
     @DisplayName("delete photo")
     public void deletePhotoTest() {
         testCase.delete();
-        Mockito.verify(service, Mockito.times(1)).delete(Mockito.any());
+        Mockito.verify(storageService, Mockito.times(1)).delete(Mockito.any());
         Mockito.verify(changeHandler, Mockito.times(1)).onChange();
     }
 
@@ -77,7 +81,8 @@ class PhotoEditorTest {
     public void savePhotoTest() {
         Mockito.when(securityUtils.getCurrentUser()).thenReturn("tester");
         testCase.save();
-        Mockito.verify(service, Mockito.times(1)).save(Mockito.any());
+        Mockito.verify(storageService, Mockito.times(1)).save(Mockito.any());
+        Mockito.verify(messageService, Mockito.times(1)).sendMessage(Mockito.any());
         Mockito.verify(securityUtils, Mockito.times(1)).getCurrentUser();
         Mockito.verify(changeHandler, Mockito.times(1)).onChange();
     }
@@ -95,8 +100,8 @@ class PhotoEditorTest {
         Mockito.when(image.getElement()).thenReturn(Mockito.mock(Element.class));
         testCase.editPhoto(new Photo());
         assertThat(testCase.isVisible()).isTrue();
-        Mockito.verify(service, Mockito.times(0)).getPhotoById(Mockito.anyLong());
-        Mockito.verify(service, Mockito.times(1)).listAllProjects();
+        Mockito.verify(storageService, Mockito.times(0)).getPhotoById(Mockito.anyLong());
+        Mockito.verify(storageService, Mockito.times(1)).listAllProjects();
         Mockito.verify(close, Mockito.times(1)).setVisible(true);
         Mockito.verify(delete, Mockito.times(1)).setVisible(false);
     }
@@ -107,12 +112,12 @@ class PhotoEditorTest {
         final Long id = 100L;
         Mockito.when(image.getElement()).thenReturn(Mockito.mock(Element.class));
         Photo photo = new Photo();
-        Mockito.when(service.getPhotoById(id)).thenReturn(Optional.of(photo));
+        Mockito.when(storageService.getPhotoById(id)).thenReturn(Optional.of(photo));
         photo.setId(id);
         testCase.editPhoto(photo);
         assertThat(testCase.isVisible()).isTrue();
-        Mockito.verify(service, Mockito.times(1)).getPhotoById(id);
-        Mockito.verify(service, Mockito.times(1)).listAllProjects();
+        Mockito.verify(storageService, Mockito.times(1)).getPhotoById(id);
+        Mockito.verify(storageService, Mockito.times(1)).listAllProjects();
         Mockito.verify(close, Mockito.times(1)).setVisible(false);
         Mockito.verify(delete, Mockito.times(1)).setVisible(true);
     }

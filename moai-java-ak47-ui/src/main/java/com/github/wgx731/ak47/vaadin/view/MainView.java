@@ -167,7 +167,11 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
     }
 
     @Autowired
-    public MainView(StorageService service, PhotoEditor editor, SecurityUtils securityUtils) {
+    public MainView(
+        StorageService service,
+        PhotoEditor editor,
+        SecurityUtils securityUtils
+    ) {
         this.service = service;
         this.securityUtils = securityUtils;
         this.editor = editor;

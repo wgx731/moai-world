@@ -29,7 +29,7 @@ import java.util.Arrays;
 public class Photo extends Auditable<String> {
 
     public enum ProcessStatus {
-        UPLOADED, PROCESSED, TRANSFERRED;
+        UPLOADED, RUNNING, PROCESSED, FAILED, TRANSFERRED;
     }
 
     public static final String[] sortKeys = {

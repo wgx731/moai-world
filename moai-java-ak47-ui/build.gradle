@@ -32,6 +32,7 @@ dependencyManagement {
 dependencies {
     implementation project(':moai-java-ak47-common')
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.ldap:spring-ldap-core'
@@ -39,7 +40,6 @@ dependencies {
     implementation 'org.springframework:spring-tx'
     implementation 'com.vaadin:vaadin-spring-boot-starter'
     implementation 'de.codecentric:spring-boot-admin-starter-client'
-    runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -51,7 +51,7 @@ springBoot {
 }
 
 bootJar {
-    baseName 'moai-java-photo-web'
+    baseName 'moai-java-ak47-ui'
 }
 
 test {

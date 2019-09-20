@@ -1,5 +1,7 @@
 package com.github.wgx731.ak47.vaadin.view;
 
+import com.github.wgx731.ak47.message.MessageQueueConst;
+import com.github.wgx731.ak47.message.TriggerProcessMsg;
 import com.github.wgx731.ak47.model.Photo;
 import com.github.wgx731.ak47.model.Project;
 import com.github.wgx731.ak47.security.SecurityUtils;
@@ -18,6 +20,7 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import elemental.json.Json;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -34,7 +37,8 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
     }
 
     private transient ChangeHandler changeHandler;
-    private transient StorageService service;
+    private transient RabbitTemplate rabbitTemplate;
+    private transient StorageService storageService;
     private transient SecurityUtils securityUtils;
     private transient Photo photo;
     private MemoryBuffer buffer;
@@ -48,9 +52,14 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
     private HorizontalLayout actions;
 
     @Autowired
-    public PhotoEditor(StorageService service, SecurityUtils securityUtils) {
+    public PhotoEditor(
+        StorageService storageService,
+        RabbitTemplate rabbitTemplate,
+        SecurityUtils securityUtils
+    ) {
+        this.storageService = storageService;
+        this.rabbitTemplate = rabbitTemplate;
         this.securityUtils = securityUtils;
-        this.service = service;
         this.buffer = new MemoryBuffer();
         this.image = new Upload(buffer);
         this.save = new Button("Save", VaadinIcon.CHECK.create());
@@ -98,7 +107,8 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
     }
 
     PhotoEditor(
-        StorageService service,
+        StorageService storageService,
+        RabbitTemplate rabbitTemplate,
         SecurityUtils securityUtils,
         ChangeHandler handler,
         ComboBox<Project> comboBox,
@@ -106,7 +116,8 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
         Button close,
         Button delete
     ) {
-        this.service = service;
+        this.storageService = storageService;
+        this.rabbitTemplate = rabbitTemplate;
         this.securityUtils = securityUtils;
         this.changeHandler = handler;
         this.projectComboBox = comboBox;
@@ -117,15 +128,22 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
     }
 
     void delete() {
-        this.service.delete(photo);
+        this.storageService.delete(photo);
         changeHandler.onChange();
     }
 
     void save() {
         photo.setStatus(Photo.ProcessStatus.UPLOADED);
         photo.setUploader(securityUtils.getCurrentUser());
-        this.service.save(photo);
+        Photo savedPhoto = this.storageService.save(photo);
         changeHandler.onChange();
+        TriggerProcessMsg msg = new TriggerProcessMsg();
+        msg.setId(savedPhoto.getId());
+        this.rabbitTemplate.convertAndSend(
+            MessageQueueConst.EXCHANGE_NAME,
+            MessageQueueConst.TRIGGER_PROCESS_QUEUE,
+            msg
+        );
     }
 
     public final void editPhoto(Photo photo) {
@@ -133,11 +151,11 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
             setVisible(false);
             return;
         }
-        projectComboBox.setItems(this.service.listAllProjects());
+        projectComboBox.setItems(this.storageService.listAllProjects());
         image.getElement().setPropertyJson("files", Json.createArray());
         final boolean persisted = photo.getId() != null;
         if (persisted) {
-            this.photo = this.service.getPhotoById(photo.getId()).get();
+            this.photo = this.storageService.getPhotoById(photo.getId()).get();
             projectComboBox.setValue(this.photo.getProject());
             this.close.setVisible(false);
             this.delete.setVisible(true);
