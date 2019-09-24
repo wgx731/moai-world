@@ -2,7 +2,7 @@ package com.github.wgx731.ak47.service;
 
 import com.github.wgx731.ak47.message.FinishProcessMsg;
 import com.github.wgx731.ak47.message.MessageQueueConst;
-import com.github.wgx731.ak47.message.TriggerProcessMsg;
+import com.github.wgx731.ak47.message.TriggerMsg;
 import com.github.wgx731.ak47.model.Photo;
 import com.github.wgx731.ak47.repository.PhotoRepository;
 import lombok.NonNull;
@@ -38,7 +38,7 @@ public class MessageService {
     @NonNull
     private PhotoRepository photoRepository;
 
-    public void receiveMessage(TriggerProcessMsg msg) {
+    public void receiveMessage(TriggerMsg msg) {
         log.info(String.format("receive trigger process message %s", msg));
         Optional<Photo> optional = photoRepository.findById(msg.getId());
         if (!optional.isPresent()) {
@@ -59,18 +59,27 @@ public class MessageService {
             photo.setStatus(Photo.ProcessStatus.PROCESSED);
             log.info(String.format("finish processing %d", photo.getId()));
         } catch (IOException e) {
-            photo.setStatus(Photo.ProcessStatus.FAILED);
+            photo.setStatus(Photo.ProcessStatus.PROCESS_FAILED);
             log.error("fail to process %d", photo.getId());
         }
         updatePhoto(photo);
         FinishProcessMsg returnMsg = new FinishProcessMsg();
         returnMsg.setId(photo.getId());
         returnMsg.setUploader(photo.getUploader());
+        returnMsg.setStatus(photo.getStatus().toString());
         log.info(String.format("send finish process message %s", returnMsg));
         template.convertAndSend(
             MessageQueueConst.EXCHANGE_NAME,
             MessageQueueConst.FINISH_PROCESS_QUEUE,
             returnMsg
+        );
+        TriggerMsg triggerMsg = new TriggerMsg();
+        triggerMsg.setId(photo.getId());
+        log.info(String.format("send trigger transfer message %s", triggerMsg));
+        template.convertAndSend(
+            MessageQueueConst.EXCHANGE_NAME,
+            MessageQueueConst.TRIGGER_TRANSFER_QUEUE,
+            triggerMsg
         );
     }
 

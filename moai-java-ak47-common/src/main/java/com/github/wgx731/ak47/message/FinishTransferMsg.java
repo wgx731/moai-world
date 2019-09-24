@@ -7,13 +7,13 @@ import java.io.Serializable;
 
 @Data
 @ToString
-public class FinishProcessMsg implements Serializable {
+public class FinishTransferMsg implements Serializable {
 
-    private static final long serialVersionUID = 3818132362342856577L;
+    private static final long serialVersionUID = -1075538218264955230L;
 
     private Long id;
 
-    private String uploader;
+    private String storageUrl;
 
     private String status;
 

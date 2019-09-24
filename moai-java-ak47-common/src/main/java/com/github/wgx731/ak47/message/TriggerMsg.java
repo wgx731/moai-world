@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Data
 @ToString
-public class TriggerProcessMsg implements Serializable {
+public class TriggerMsg implements Serializable {
 
     private static final long serialVersionUID = 437504489130908158L;
 

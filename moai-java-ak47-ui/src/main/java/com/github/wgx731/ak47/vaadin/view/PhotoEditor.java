@@ -1,7 +1,7 @@
 package com.github.wgx731.ak47.vaadin.view;
 
 import com.github.wgx731.ak47.message.MessageQueueConst;
-import com.github.wgx731.ak47.message.TriggerProcessMsg;
+import com.github.wgx731.ak47.message.TriggerMsg;
 import com.github.wgx731.ak47.model.Photo;
 import com.github.wgx731.ak47.model.Project;
 import com.github.wgx731.ak47.security.SecurityUtils;
@@ -137,7 +137,7 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
         photo.setUploader(securityUtils.getCurrentUser());
         Photo savedPhoto = this.storageService.save(photo);
         changeHandler.onChange();
-        TriggerProcessMsg msg = new TriggerProcessMsg();
+        TriggerMsg msg = new TriggerMsg();
         msg.setId(savedPhoto.getId());
         this.rabbitTemplate.convertAndSend(
             MessageQueueConst.EXCHANGE_NAME,

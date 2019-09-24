@@ -15,3 +15,18 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+  stmp:
+    build:
+      context: ./docker
+      dockerfile: SmtpDockerfile
+    ports:
+      - "8025:8025"
+  sftp:
+    build:
+      context: ./docker
+      dockerfile: SftpDockerfile
+    volumes:
+      - ./local/upload:/home/sftpuser/upload
+      - ./docker/sshd_config:/etc/ssh/sshd_config
+    ports:
+      - "8022:22"

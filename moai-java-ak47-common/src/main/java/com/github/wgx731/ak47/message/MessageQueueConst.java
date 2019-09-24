@@ -8,4 +8,8 @@ public class MessageQueueConst {
 
     public static final String FINISH_PROCESS_QUEUE = "finish.process";
 
+    public static final String TRIGGER_TRANSFER_QUEUE = "trigger.transfer";
+
+    public static final String FINISH_TRANSFER_QUEUE = "finish.transfer";
+
 }
