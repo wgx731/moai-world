@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -45,17 +46,22 @@ public class MessageService {
             return;
         }
         Photo photo = optional.get();
-        photo.setStatus(Photo.ProcessStatus.RUNNING);
-        updatePhoto(photo);
-        log.info(String.format("start transferring %d", photo.getId()));
-        try {
-            String storageUrl = transferFile(photo);
-            photo.setStorageUrl(storageUrl);
-            photo.setStatus(Photo.ProcessStatus.TRANSFERRED);
-            log.info(String.format("finish transferring %d", photo.getId()));
-        } catch (IOException e) {
+        if (Objects.isNull(photo.getData())) {
             photo.setStatus(Photo.ProcessStatus.TRANSFER_FAILED);
-            log.error(String.format("fail to transfer %d", photo.getId()), e);
+            log.error(String.format("fail to transfer %d photo data is null", photo.getId()));
+        } else {
+            photo.setStatus(Photo.ProcessStatus.RUNNING);
+            updatePhoto(photo);
+            log.info(String.format("start transferring %d", photo.getId()));
+            try {
+                String storageUrl = transferFile(photo);
+                photo.setStorageUrl(storageUrl);
+                photo.setStatus(Photo.ProcessStatus.TRANSFERRED);
+                log.info(String.format("finish transferring %d", photo.getId()));
+            } catch (IOException e) {
+                photo.setStatus(Photo.ProcessStatus.TRANSFER_FAILED);
+                log.error(String.format("fail to transfer %d", photo.getId()), e);
+            }
         }
         updatePhoto(photo);
         FinishTransferMsg returnMsg = new FinishTransferMsg();

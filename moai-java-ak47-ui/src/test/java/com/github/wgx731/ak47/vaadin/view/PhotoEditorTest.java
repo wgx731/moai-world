@@ -1,5 +1,7 @@
 package com.github.wgx731.ak47.vaadin.view;
 
+import com.github.wgx731.ak47.message.MessageQueueConst;
+import com.github.wgx731.ak47.message.TriggerMsg;
 import com.github.wgx731.ak47.model.Photo;
 import com.github.wgx731.ak47.model.Project;
 import com.github.wgx731.ak47.security.SecurityUtils;
@@ -15,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.util.Optional;
 
@@ -25,7 +28,7 @@ class PhotoEditorTest {
     @Mock
     private StorageService storageService;
     @Mock
-    private MessageService messageService;
+    private RabbitTemplate rabbitTemplate;
     @Mock
     private SecurityUtils securityUtils;
     @Mock
@@ -46,7 +49,7 @@ class PhotoEditorTest {
         MockitoAnnotations.initMocks(this);
         testCase = new PhotoEditor(
             storageService,
-            messageService,
+            rabbitTemplate,
             securityUtils,
             changeHandler,
             comboBox,
@@ -59,7 +62,7 @@ class PhotoEditorTest {
     @AfterEach
     void tearDown() {
         storageService = null;
-        messageService = null;
+        rabbitTemplate = null;
         changeHandler = null;
         comboBox = null;
         image = null;
@@ -80,9 +83,16 @@ class PhotoEditorTest {
     @DisplayName("save photo")
     public void savePhotoTest() {
         Mockito.when(securityUtils.getCurrentUser()).thenReturn("tester");
+        Photo p = new Photo();
+        p.setId(1L);
+        Mockito.when(storageService.save(Mockito.any())).thenReturn(p);
         testCase.save();
         Mockito.verify(storageService, Mockito.times(1)).save(Mockito.any());
-        Mockito.verify(messageService, Mockito.times(1)).sendMessage(Mockito.any());
+        Mockito.verify(rabbitTemplate, Mockito.times(1)).convertAndSend(
+            Mockito.eq(MessageQueueConst.EXCHANGE_NAME),
+            Mockito.eq(MessageQueueConst.TRIGGER_PROCESS_QUEUE),
+            Mockito.any(TriggerMsg.class)
+        );
         Mockito.verify(securityUtils, Mockito.times(1)).getCurrentUser();
         Mockito.verify(changeHandler, Mockito.times(1)).onChange();
     }

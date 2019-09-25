@@ -20,7 +20,7 @@ services:
       context: ./docker
       dockerfile: SmtpDockerfile
     ports:
-      - "8025:8025"
+      - "8025:25"
   sftp:
     build:
       context: ./docker

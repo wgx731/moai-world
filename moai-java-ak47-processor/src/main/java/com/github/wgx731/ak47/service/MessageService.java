@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -46,21 +47,26 @@ public class MessageService {
             return;
         }
         Photo photo = optional.get();
-        photo.setStatus(Photo.ProcessStatus.RUNNING);
-        updatePhoto(photo);
-        log.info(String.format("start processing %d", photo.getId()));
-        try {
-            byte[] dataWithText = appendText(
-                photo.getData(),
-                photo.getImageType(),
-                new Timestamp(System.currentTimeMillis()).toString()
-            );
-            photo.setData(dataWithText);
-            photo.setStatus(Photo.ProcessStatus.PROCESSED);
-            log.info(String.format("finish processing %d", photo.getId()));
-        } catch (IOException e) {
+        if (Objects.isNull(photo.getData())) {
             photo.setStatus(Photo.ProcessStatus.PROCESS_FAILED);
-            log.error("fail to process %d", photo.getId());
+            log.error("fail to process %d photo data is null", photo.getId());
+        } else {
+            photo.setStatus(Photo.ProcessStatus.RUNNING);
+            updatePhoto(photo);
+            log.info(String.format("start processing %d", photo.getId()));
+            try {
+                byte[] dataWithText = appendText(
+                    photo.getData(),
+                    photo.getImageType(),
+                    new Timestamp(System.currentTimeMillis()).toString()
+                );
+                photo.setData(dataWithText);
+                photo.setStatus(Photo.ProcessStatus.PROCESSED);
+                log.info(String.format("finish processing %d", photo.getId()));
+            } catch (IOException e) {
+                photo.setStatus(Photo.ProcessStatus.PROCESS_FAILED);
+                log.error("fail to process %d", photo.getId());
+            }
         }
         updatePhoto(photo);
         FinishProcessMsg returnMsg = new FinishProcessMsg();
@@ -84,9 +90,13 @@ public class MessageService {
     }
 
     private byte[] appendText(byte[] data, String imageType, String timestamp) throws IOException {
+        int type = imageType.contains("png") ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+        if (type == BufferedImage.TYPE_INT_ARGB) {
+            log.warn("text can only be added on png file.");
+            return data;
+        }
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         BufferedImage image = ImageIO.read(bis);
-        int type = imageType.contains("png") ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
         BufferedImage imageWithText = new BufferedImage(image.getWidth(), image.getHeight(), type);
 
         Graphics2D w = (Graphics2D) imageWithText.getGraphics();
