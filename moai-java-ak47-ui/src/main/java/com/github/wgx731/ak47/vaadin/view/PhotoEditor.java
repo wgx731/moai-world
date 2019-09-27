@@ -134,7 +134,7 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
 
     void save() {
         photo.setStatus(Photo.ProcessStatus.UPLOADED);
-        photo.setUploader(securityUtils.getCurrentUser());
+        photo.setUploader(securityUtils.getCurrentUserString());
         Photo savedPhoto = this.storageService.save(photo);
         changeHandler.onChange();
         TriggerMsg msg = new TriggerMsg();

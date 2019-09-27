@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuditorAwareImplTest {
@@ -23,7 +25,7 @@ class AuditorAwareImplTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
         testCase = new AuditorAwareImpl(securityUtils);
-        Mockito.when(securityUtils.getCurrentUser()).thenReturn(AUDITOR);
+        Mockito.when(securityUtils.getCurrentUser()).thenReturn(Optional.of(AUDITOR));
     }
 
     @AfterEach
@@ -36,4 +38,5 @@ class AuditorAwareImplTest {
         assertThat(testCase.getCurrentAuditor().isPresent()).isTrue();
         assertThat(testCase.getCurrentAuditor().get()).isEqualTo(AUDITOR);
     }
+
 }

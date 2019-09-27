@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -45,12 +46,20 @@ public class SecurityUtils {
             && authentication.isAuthenticated();
     }
 
-    public String getCurrentUser() {
+    public Optional<String> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (Objects.isNull(authentication)) {
-            return "NON_LOGGED_IN_USER";
+            return Optional.empty();
         }
-        return authentication.getName();
+        return Optional.of(authentication.getName());
+    }
+
+    public String getCurrentUserString() {
+        Optional<String> currentUser = this.getCurrentUser();
+        if (currentUser.isPresent()) {
+            return currentUser.get();
+        }
+        return "NON_LOGGED_IN_USER";
     }
 
 }

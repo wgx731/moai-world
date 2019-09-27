@@ -20,7 +20,7 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.of(securityUtils.getCurrentUser());
+        return securityUtils.getCurrentUser();
     }
 
 }

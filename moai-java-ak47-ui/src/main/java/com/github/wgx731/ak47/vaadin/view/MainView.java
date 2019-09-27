@@ -158,7 +158,7 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
     void refreshData() {
         PagingParams params = this.getPagingParams();
         this.data = this.service.listUserPhotosByPage(
-            this.securityUtils.getCurrentUser(),
+            this.securityUtils.getCurrentUserString(),
             PageRequest.of(
                 params.getPageNum(),
                 params.getPageSize(),

@@ -82,7 +82,8 @@ class PhotoEditorTest {
     @Test
     @DisplayName("save photo")
     public void savePhotoTest() {
-        Mockito.when(securityUtils.getCurrentUser()).thenReturn("tester");
+        Mockito.when(securityUtils.getCurrentUser()).thenReturn(Optional.of("tester"));
+        Mockito.when(securityUtils.getCurrentUserString()).thenReturn("tester");
         Photo p = new Photo();
         p.setId(1L);
         Mockito.when(storageService.save(Mockito.any())).thenReturn(p);
@@ -93,7 +94,7 @@ class PhotoEditorTest {
             Mockito.eq(MessageQueueConst.TRIGGER_PROCESS_QUEUE),
             Mockito.any(TriggerMsg.class)
         );
-        Mockito.verify(securityUtils, Mockito.times(1)).getCurrentUser();
+        Mockito.verify(securityUtils, Mockito.times(1)).getCurrentUserString();
         Mockito.verify(changeHandler, Mockito.times(1)).onChange();
     }
 

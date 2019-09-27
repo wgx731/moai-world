@@ -17,11 +17,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,7 +55,8 @@ class MainViewTest {
         Mockito.when(service.listUserPhotosByPage(Mockito.anyString(), Mockito.any())).thenReturn(
             data
         );
-        Mockito.when(securityUtils.getCurrentUser()).thenReturn("tester");
+        Mockito.when(securityUtils.getCurrentUser()).thenReturn(Optional.of("tester"));
+        Mockito.when(securityUtils.getCurrentUserString()).thenReturn("tester");
         testCase = new MainView(
             service,
             securityUtils,

@@ -89,31 +89,36 @@ public class MessageService {
         );
     }
 
-    private byte[] appendText(byte[] data, String imageType, String timestamp) throws IOException {
+    byte[] appendText(byte[] data, String imageType, String timestamp) throws IOException {
         int type = imageType.contains("png") ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
-        if (type == BufferedImage.TYPE_INT_ARGB) {
+        if (type == BufferedImage.TYPE_INT_RGB) {
             log.warn("text can only be added on png file.");
             return data;
         }
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         BufferedImage image = ImageIO.read(bis);
-        BufferedImage imageWithText = new BufferedImage(image.getWidth(), image.getHeight(), type);
+        BufferedImage imageWithText;
+        try {
+            imageWithText = new BufferedImage(image.getWidth(), image.getHeight(), type);
+        } catch (NullPointerException e) {
+            throw new IOException("image is null");
+        }
 
         Graphics2D w = (Graphics2D) imageWithText.getGraphics();
         w.drawImage(image, 0, 0, null);
-        AlphaComposite alphaChannel = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f);
+        AlphaComposite alphaChannel = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f);
         w.setComposite(alphaChannel);
         w.setColor(Color.GRAY);
-        w.setFont(new Font(Font.SERIF, Font.PLAIN, 10));
+        w.setFont(new Font(Font.SERIF, Font.PLAIN, 9));
         FontMetrics fontMetrics = w.getFontMetrics();
         Rectangle2D rect = fontMetrics.getStringBounds(timestamp, w);
 
-        int x = (image.getWidth() - (int) rect.getWidth()) / 2;
-        int y = image.getHeight() / 2;
+        int x = image.getWidth() - (int) rect.getWidth();
+        int y = image.getHeight() - (int) rect.getHeight();
 
         w.drawString(timestamp, x, y);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(imageWithText, imageType.contains("png") ? "png" : "jpg", baos);
+        ImageIO.write(imageWithText, "png", baos);
         w.dispose();
         return baos.toByteArray();
     }
