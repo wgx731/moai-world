@@ -2,6 +2,7 @@ package com.github.wgx731.ak47.service;
 
 import com.github.wgx731.ak47.message.FinishProcessMsg;
 import com.github.wgx731.ak47.message.MessageQueueConst;
+import com.github.wgx731.ak47.message.Receiver;
 import com.github.wgx731.ak47.message.TriggerMsg;
 import com.github.wgx731.ak47.model.Photo;
 import com.github.wgx731.ak47.repository.PhotoRepository;
@@ -31,7 +32,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-public class MessageService {
+public class MessageService implements Receiver {
 
     @NonNull
     private RabbitTemplate template;
@@ -109,12 +110,16 @@ public class MessageService {
         AlphaComposite alphaChannel = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f);
         w.setComposite(alphaChannel);
         w.setColor(Color.GRAY);
-        w.setFont(new Font(Font.SERIF, Font.PLAIN, 9));
+        w.setFont(new Font(Font.SERIF, Font.PLAIN, 14));
         FontMetrics fontMetrics = w.getFontMetrics();
         Rectangle2D rect = fontMetrics.getStringBounds(timestamp, w);
 
-        int x = image.getWidth() - (int) rect.getWidth();
-        int y = image.getHeight() - (int) rect.getHeight();
+        int x = image.getWidth() - ((int) rect.getWidth() * 2);
+        int y = image.getHeight() - ((int) rect.getHeight() * 2);
+
+        // NOTE: make sure x and y are bigger than 0
+        y = y > 0 ? y : 0;
+        x = x > 0 ? x : 0;
 
         w.drawString(timestamp, x, y);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -2,6 +2,7 @@ package com.github.wgx731.ak47.config;
 
 import com.github.wgx731.ak47.audit.AuditorAwareImpl;
 import com.github.wgx731.ak47.message.MessageQueueConst;
+import com.github.wgx731.ak47.message.Receiver;
 import com.github.wgx731.ak47.service.MessageService;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -48,7 +49,7 @@ public class AppConfig {
     }
 
     @Bean
-    MessageListenerAdapter listenerAdapter(MessageService receiver) {
+    MessageListenerAdapter listenerAdapter(Receiver receiver) {
         return new MessageListenerAdapter(receiver, "receiveMessage");
     }
 

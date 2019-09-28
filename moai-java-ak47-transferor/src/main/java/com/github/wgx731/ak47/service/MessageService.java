@@ -2,6 +2,7 @@ package com.github.wgx731.ak47.service;
 
 import com.github.wgx731.ak47.message.FinishTransferMsg;
 import com.github.wgx731.ak47.message.MessageQueueConst;
+import com.github.wgx731.ak47.message.Receiver;
 import com.github.wgx731.ak47.message.TriggerMsg;
 import com.github.wgx731.ak47.model.Photo;
 import com.github.wgx731.ak47.repository.PhotoRepository;
@@ -25,7 +26,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-public class MessageService {
+public class MessageService implements Receiver {
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
