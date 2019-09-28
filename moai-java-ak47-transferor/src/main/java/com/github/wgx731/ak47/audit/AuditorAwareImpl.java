@@ -10,7 +10,7 @@ import java.util.Optional;
 @Slf4j
 public class AuditorAwareImpl implements AuditorAware<String> {
 
-    public static final String AUDITOR = "IMAGE_TRANSFEROR_APP";
+    public static final String AUDITOR = "TRANSFEROR_APP";
 
     @Override
     public Optional<String> getCurrentAuditor() {

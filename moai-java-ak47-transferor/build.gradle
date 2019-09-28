@@ -64,4 +64,12 @@ jacocoTestCoverageVerification {
             }
         }
     }
+    afterEvaluate {
+        getClassDirectories().setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    'com/github/wgx731/ak47/Application*',
+                    'com/github/wgx731/ak47/config/*'
+            ])
+        }))
+    }
 }
