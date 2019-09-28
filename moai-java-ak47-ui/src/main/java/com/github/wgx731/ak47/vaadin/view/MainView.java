@@ -196,10 +196,16 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
         this.photoGrid.addColumn(p -> p.getImageType()).setHeader("Image Type");
         this.photoGrid.addColumn(p -> p.getStatus()).setHeader("Image Status");
         this.photoGrid.addColumn(p -> p.getUploader()).setHeader("Uploader");
-        this.photoGrid.addColumn(new ComponentRenderer<>(p -> new Image(
-            new StreamResource(String.format("photo %d", p.getId()), () -> new ByteArrayInputStream(p.getData())),
-            "preview photo"
-        ))).setHeader("Preview");
+        this.photoGrid.addColumn(new ComponentRenderer<>(p -> {
+            Image image = new Image(
+                new StreamResource(
+                    String.format("photo %d", p.getId()),
+                    () -> new ByteArrayInputStream(p.getData())),
+                "preview photo"
+            );
+            image.setHeight("200px");
+            return image;
+        })).setHeader("Preview");
 
         this.newPhotoBtn = new Button("New photo", VaadinIcon.PLUS.create());
         this.newPhotoBtn.addClickListener(e -> editor.editPhoto(new Photo()));
