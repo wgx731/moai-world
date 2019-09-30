@@ -68,10 +68,6 @@ public class Photo extends Auditable<String> {
     @NonNull
     private String uploader;
 
-    @Column(name = "server_id")
-    @NonNull
-    private String severId;
-
     @Column(name = "storage_url")
     @NonNull
     private String storageUrl;
