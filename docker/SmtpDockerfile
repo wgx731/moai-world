@@ -1,0 +1,10 @@
+FROM python:3-alpine
+
+WORKDIR /usr/src/app
+
+COPY smtp-requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 25
+
+CMD [ "python", "-m", "aiosmtpd", "-n", "-l", "0.0.0.0:25"]

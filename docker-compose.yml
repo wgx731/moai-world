@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  db:
+    image: "mariadb:10"
+    environment:
+        - MYSQL_ROOT_PASSWORD=Password
+    ports:
+        - "3306:3306"
+  queue:
+    image: "rabbitmq:3-management"
+    environment:
+        - RABBITMQ_DEFAULT_USER=root
+        - RABBITMQ_DEFAULT_PASS=Password
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  stmp:
+    build:
+      context: ./docker
+      dockerfile: SmtpDockerfile
+    ports:
+      - "8025:25"
+  sftp:
+    build:
+      context: ./docker
+      dockerfile: SftpDockerfile
+    volumes:
+      - ./local/upload:/home/sftpuser/upload
+      - ./docker/sshd_config:/etc/ssh/sshd_config
+    ports:
+      - "8022:22"
