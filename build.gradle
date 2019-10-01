@@ -19,7 +19,7 @@ allprojects {
     // NOTE: last checked date: 2019-09-03
     ext {
         projectGroup = 'com.github.wgx731'
-        projectVersion = '1.0.0.RELEASE'
+        projectVersion = '1.1.0.RELEASE'
 
         javaVersion = '12'
 
