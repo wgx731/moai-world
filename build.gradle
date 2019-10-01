@@ -6,43 +6,42 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // NOTE: last checked date: 2019-09-03
+        // NOTE: last checked date: 2019-10-01
         classpath 'io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE'
         classpath 'gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:2.0.0'
-        classpath 'net.ltgt.gradle:gradle-apt-plugin:0.18'
-        classpath 'io.franzbecker:gradle-lombok:3.1.0'
+        classpath 'net.ltgt.gradle:gradle-apt-plugin:0.21'
+        classpath 'io.franzbecker:gradle-lombok:3.2.0'
     }
 }
 
 allprojects {
 
-    // NOTE: last checked date: 2019-09-03
+    // NOTE: last checked date: 2019-10-01
     ext {
         projectGroup = 'com.github.wgx731'
         projectVersion = '1.1.0.RELEASE'
 
         javaVersion = '12'
 
-        asciidoctorVersion = '1.6.1'
         jacocoVersion = '0.8.4'
         spotbugsVersion = '3.1.12'
 
-        springBootVersion = '2.1.7.RELEASE'
+        springBootVersion = '2.1.8.RELEASE'
         apacheCommonLangVersion = '3.9'
         apacheCommonVfsVersion = '2.4.1'
         jschVersion = '0.1.55'
-        jacksonVersion = '2.9.9'
-        lombokVersion = '1.18.8'
+        jacksonVersion = '2.9.10'
+        lombokVersion = '1.18.10'
         log4j2Version = '2.12.1'
         javaxXmlJaxbVersion = '2.3.1'
         disuptorVersion = '3.4.2'
 
-        junitVersion = '5.5.1'
+        junitVersion = '5.5.2'
         assertjVersion = '3.13.2'
         mockitoVersion = '3.0.0'
-        springBootAdminVersion = '2.1.5'
-        vaadinVersion = '14.0.4'
-        kaributestingVersion = '1.1.9'
+        springBootAdminVersion = '2.1.6'
+        vaadinVersion = '14.0.6'
+        kaributestingVersion = '1.1.12'
     }
 
     repositories {
