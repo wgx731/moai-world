@@ -1,12 +1,3 @@
-apply plugin: 'org.springframework.boot'
-
-dependencyManagement {
-    imports {
-        mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
-    }
-}
-
-
 dependencies {
     implementation 'de.codecentric:spring-boot-admin-starter-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -16,9 +7,5 @@ dependencies {
 }
 
 springBoot {
-    buildInfo()
-}
-
-bootJar {
-    baseName 'moai-java-spring-admin'
+    mainClassName = 'com.github.wgx731.ak47.Application'
 }

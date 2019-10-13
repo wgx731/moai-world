@@ -1,11 +1,3 @@
-apply plugin: 'org.springframework.boot'
-
-dependencyManagement {
-    imports {
-        mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
-    }
-}
-
 dependencies {
     implementation project(':moai-java-ak47-common')
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
@@ -20,11 +12,7 @@ dependencies {
 }
 
 springBoot {
-    buildInfo()
-}
-
-bootJar {
-    baseName 'moai-java-ak47-processor'
+    mainClassName = 'com.github.wgx731.ak47.Application'
 }
 
 test {
