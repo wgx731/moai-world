@@ -49,7 +49,9 @@ allprojects {
 
     dependencyManagement {
         imports {
-            mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+            mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
+            mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
         }
         dependencies {
             dependency "javax.xml.bind:jaxb-api:${javaxXmlJaxbVersion}"
