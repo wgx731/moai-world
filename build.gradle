@@ -1,32 +1,26 @@
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-        mavenCentral()
-    }
-    dependencies {
-        // NOTE: last checked date: 2019-10-01
-        classpath 'io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE'
-        classpath 'gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:2.0.0'
-        classpath 'net.ltgt.gradle:gradle-apt-plugin:0.21'
-        classpath 'io.franzbecker:gradle-lombok:3.2.0'
-    }
+// NOTE: last checked date: 2019-Oct-13
+
+plugins {
+    id 'org.springframework.boot' version '2.1.9.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id "com.github.spotbugs" version '2.0.0'
+    id "io.franzbecker.gradle-lombok" version '3.2.0'
+    id 'java'
+    id 'idea'
 }
 
 allprojects {
 
-    // NOTE: last checked date: 2019-10-01
     ext {
         projectGroup = 'com.github.wgx731'
         projectVersion = '1.1.0.RELEASE'
 
-        javaVersion = '12'
+        javaVersion = '11'
 
-        jacocoVersion = '0.8.4'
+        jacocoVersion = '0.8.5'
         spotbugsVersion = '3.1.12'
 
-        springBootVersion = '2.1.8.RELEASE'
+        springBootVersion = '2.1.9.RELEASE'
         apacheCommonLangVersion = '3.9'
         apacheCommonVfsVersion = '2.4.1'
         jschVersion = '0.1.55'
@@ -38,10 +32,10 @@ allprojects {
 
         junitVersion = '5.5.2'
         assertjVersion = '3.13.2'
-        mockitoVersion = '3.0.0'
+        mockitoVersion = '3.1.0'
         springBootAdminVersion = '2.1.6'
-        vaadinVersion = '14.0.6'
-        kaributestingVersion = '1.1.12'
+        vaadinVersion = '14.0.8'
+        kaributestingVersion = '1.1.13'
     }
 
     repositories {
@@ -82,15 +76,19 @@ subprojects {
 
     repositories {
         mavenCentral()
-        jcenter()
     }
 
     apply plugin: 'java'
-    apply plugin: 'net.ltgt.apt'
-    apply plugin: 'jacoco'
-    apply plugin: "com.github.spotbugs"
     apply plugin: 'idea'
+    apply plugin: "com.github.spotbugs"
+    apply plugin: 'jacoco'
     apply plugin: "io.franzbecker.gradle-lombok"
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
 
     jar {
         onlyIf { !sourceSets.main.allSource.files.isEmpty() }
