@@ -5,10 +5,19 @@ dependencies {
 }
 
 test {
+    dependsOn spotbugsMain, spotbugsTest
     useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
     }
+}
+
+bootJar {
+    enabled false
+}
+
+jar {
+    enabled true
 }
 
 jacocoTestCoverageVerification {
@@ -20,3 +29,4 @@ jacocoTestCoverageVerification {
         }
     }
 }
+

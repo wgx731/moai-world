@@ -3,7 +3,7 @@
 echo "[MOAI] docker clean up ..."
 
 echo "[MOAI] docker clean up - image ..."
-docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
+docker rmi $(docker images --filter "dangling=true" -qa --no-trunc)
 
 echo "[MOAI] docker clean up - container ..."
 docker rm $(docker ps -qa --no-trunc --filter "status=exited")

@@ -1,0 +1,37 @@
+name: dr-spring CI CD action
+
+on:
+  push:
+    branches:
+      - dev
+      - master
+  pull_request:
+    branches:
+      - dev
+      - master
+
+jobs:
+  test-coverage:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Test Coverage
+      run: $PWD/scripts/test-coverage.sh
+
+  publish-artifacts:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+        packages: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build Artifacts
+      run: $PWD/scripts/build-artifacts.sh
