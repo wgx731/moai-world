@@ -6,4 +6,3 @@ include 'moai-java-ak47-ui'
 include 'moai-java-ak47-common'
 include 'moai-java-ak47-processor'
 include 'moai-java-ak47-transferor'
-

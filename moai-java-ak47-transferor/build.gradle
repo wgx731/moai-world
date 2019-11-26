@@ -15,7 +15,12 @@ springBoot {
     mainClassName = 'com.github.wgx731.ak47.Application'
 }
 
+bootJar {
+    enabled true
+}
+
 test {
+    dependsOn spotbugsMain, spotbugsTest
     useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"

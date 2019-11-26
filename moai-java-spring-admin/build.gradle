@@ -9,3 +9,7 @@ dependencies {
 springBoot {
     mainClassName = 'com.github.wgx731.ak47.Application'
 }
+
+bootJar {
+    enabled true
+}
