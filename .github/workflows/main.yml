@@ -1,4 +1,4 @@
-name: dr-spring CI CD action
+name: MOAI CI CD Github action
 
 on:
   push:
