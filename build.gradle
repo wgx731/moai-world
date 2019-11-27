@@ -13,7 +13,7 @@ allprojects {
 
     ext {
         projectGroup = 'com.github.wgx731'
-        projectVersion = '1.2.0.RELEASE'
+        projectVersion = '1.2.1.RELEASE'
 
         javaVersion = '11'
 

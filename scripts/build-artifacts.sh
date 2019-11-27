@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "[MOAI] source config ..."
+echo "[MOAI:BUILD] source config ..."
 source ${PWD}/scripts/config.env || exit 1
 
-echo "[MOAI] building artifacts ..."
+echo "[MOAI:BUILD] building artifacts ..."
 $PWD/gradlew clean build -x test -x spotbugsMain -x spotbugsTest -q || exit 1
