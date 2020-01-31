@@ -1,7 +1,6 @@
 rootProject.name = 'moai-world'
 
 include 'moai-java-threading'
-include 'moai-java-spring-admin'
 include 'moai-java-ak47-ui'
 include 'moai-java-ak47-common'
 include 'moai-java-ak47-processor'

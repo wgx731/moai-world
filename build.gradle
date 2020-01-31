@@ -1,9 +1,9 @@
-// NOTE: last checked date: 2019-Nov-26
+// NOTE: last checked date: 2019-Jan-31
 
 plugins {
-    id 'org.springframework.boot' version '2.2.1.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-    id 'com.github.spotbugs' version '2.0.1'
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'com.github.spotbugs' version '3.0.0'
     id 'io.franzbecker.gradle-lombok' version '3.2.0'
     id 'java'
     id 'idea'
@@ -13,28 +13,27 @@ allprojects {
 
     ext {
         projectGroup = 'com.github.wgx731'
-        projectVersion = '1.2.1.RELEASE'
+        projectVersion = '1.3.0.RELEASE'
 
         javaVersion = '11'
 
         jacocoVersion = '0.8.5'
         spotbugsVersion = '3.1.12'
 
-        springBootVersion = '2.2.1.RELEASE'
-        apacheCommonLangVersion = '3.9'
-        apacheCommonVfsVersion = '2.4.1'
-        jschVersion = '0.1.55'
-        jacksonVersion = '2.10.1'
-        lombokVersion = '1.18.10'
-        log4j2Version = '2.12.1'
-        disuptorVersion = '3.4.2'
+        springBootVersion = '2.2.4.RELEASE'
+        vaadinVersion = '14.1.16'
 
-        junitVersion = '5.5.2'
-        assertjVersion = '3.14.0'
-        mockitoVersion = '3.1.0'
-        springBootAdminVersion = '2.1.6'
-        vaadinVersion = '14.0.14'
-        kaributestingVersion = '1.1.17'
+        apacheCommonLangVersion = '3.9'
+        apacheCommonVfsVersion = '2.6.0'
+        jschVersion = '0.1.55'
+        jacksonVersion = '2.10.2'
+        lombokVersion = '1.18.10'
+        log4j2Version = '2.13.0'
+
+        junitVersion = '5.6.0'
+        assertjVersion = '3.15.0'
+        mockitoVersion = '3.2.4'
+        kaributestingVersion = '1.1.19'
     }
 
     repositories {
@@ -51,15 +50,12 @@ allprojects {
     dependencyManagement {
         imports {
             mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
-            mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
             mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
         }
         dependencies {
             dependency "com.github.spotbugs:spotbugs:${spotbugsVersion}"
             dependency "org.projectlombok:lombok:${lombokVersion}"
-            dependency "org.junit.jupiter:junit-jupiter:${junitVersion}"
-            dependency "org.mockito:mockito-core:${mockitoVersion}"
-            dependency "org.assertj:assertj-core:${assertjVersion}"
+
             dependency "org.apache.commons:commons-lang3:${apacheCommonLangVersion}"
             dependency "org.apache.commons:commons-vfs2:${apacheCommonVfsVersion}"
             dependency "com.jcraft:jsch:${jschVersion}"
@@ -67,6 +63,10 @@ allprojects {
             dependency "org.apache.logging.log4j:log4j-core:${log4j2Version}"
             dependency "org.apache.logging.log4j:log4j-api:${log4j2Version}"
             dependency "org.apache.logging.log4j:log4j-slf4j-impl:${log4j2Version}"
+
+            dependency "org.junit.jupiter:junit-jupiter:${junitVersion}"
+            dependency "org.mockito:mockito-core:${mockitoVersion}"
+            dependency "org.assertj:assertj-core:${assertjVersion}"
             dependency "com.github.mvysny.kaributesting:karibu-testing-v10:${kaributestingVersion}"
         }
     }
@@ -90,6 +90,9 @@ subprojects {
     apply plugin: "io.franzbecker.gradle-lombok"
 
     configurations {
+
+        all*.exclude module: 'spring-boot-starter-logging'
+
         compileOnly {
             extendsFrom annotationProcessor
         }
@@ -122,6 +125,7 @@ subprojects {
         implementation 'com.github.spotbugs:spotbugs'
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
+
         testImplementation 'org.junit.jupiter:junit-jupiter'
         testImplementation 'org.mockito:mockito-core'
         testImplementation 'org.assertj:assertj-core'
