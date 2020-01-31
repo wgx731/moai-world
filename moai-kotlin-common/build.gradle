@@ -1,0 +1,30 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.60'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    implementation "org.jetbrains.kotlin:kotlin-reflect"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "${javaVersion}"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "${javaVersion}"
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+    }
+}
+
+test {
+    dependsOn spotbugsMain, spotbugsTest
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
