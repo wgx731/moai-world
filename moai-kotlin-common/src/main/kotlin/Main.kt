@@ -8,9 +8,9 @@ package com.github.wgx731.kotlin
  */
 data class Language(val name: String, val hotness: Int)
 
-class Sample {
+class KotlinSample {
     /**
-     * @return data relating to the Kotlin {@code Lanugage}.
+     * @return data relating to the Kotlin {@code Language}.
      */
     fun kotlinLanguage() = Language("Kotlin", 10)
 }
