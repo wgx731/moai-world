@@ -4,12 +4,12 @@ echo "[MOAI:TEST] source config ..."
 source ${PWD}/scripts/config.env || exit 1
 
 echo "[MOAI:TEST] count source code lines ..."
-echo "total lines: $(find . -name "*.java" | xargs cat | grep "[a-zA-Z0-9{}]" | wc -l | tr -d ' ')"
+echo "total lines: $(find . -name "*.java" -o -name "*.kt" | xargs cat | grep "[a-zA-Z0-9{}]" | wc -l | tr -d ' ')"
 for module in ${MODULES}
 do
-  echo "${module} source code lines: $(find ./${module}/src/main -name "*.java" \
+  echo "${module} source code lines: $(find ./${module}/src/main -name "*.java" -o -name "*.kt" \
     | xargs cat | grep "[a-zA-Z0-9{}]" | wc -l | tr -d ' ')"
-  echo "${module} test code lines: $(find ./${module}/src/test -name "*.java" \
+  echo "${module} test code lines: $(find ./${module}/src/test -name "*.java" -o -name "*.kt" \
     | xargs cat | grep "[a-zA-Z0-9{}]" | wc -l | tr -d ' ')"
 done
 
