@@ -176,6 +176,14 @@ subprojects {
         }
         publications {
             gpr(MavenPublication) {
+                versionMapping {
+                    usage('java-api') {
+                        fromResolutionOf('runtimeClasspath')
+                    }
+                    usage('java-runtime') {
+                        fromResolutionResult()
+                    }
+                }
                 from(components.java)
             }
         }
