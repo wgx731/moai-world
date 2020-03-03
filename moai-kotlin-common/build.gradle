@@ -28,3 +28,11 @@ test {
         events "passed", "skipped", "failed"
     }
 }
+
+bootJar {
+    enabled false
+}
+
+jar {
+    enabled true
+}

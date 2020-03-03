@@ -7,6 +7,7 @@ plugins {
     id 'io.franzbecker.gradle-lombok' version '3.2.0'
     id 'java'
     id 'idea'
+    id 'maven-publish'
 }
 
 allprojects {
@@ -90,6 +91,7 @@ subprojects {
     apply plugin: "com.github.spotbugs"
     apply plugin: 'jacoco'
     apply plugin: "io.franzbecker.gradle-lombok"
+    apply plugin: "maven-publish"
 
     configurations {
 
@@ -161,5 +163,22 @@ subprojects {
         failOnError = false
     }
 
-}
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/wgx731/moai-world")
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                    password = project.findProperty("gpr.key") ?: System.getenv("PASSWORD")
+                }
+            }
+        }
+        publications {
+            gpr(MavenPublication) {
+                from(components.java)
+            }
+        }
+    }
 
+}
