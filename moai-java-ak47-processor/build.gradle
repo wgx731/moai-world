@@ -41,3 +41,7 @@ jacocoTestCoverageVerification {
         }))
     }
 }
+
+publish {
+    dependsOn assemble
+}

@@ -163,10 +163,6 @@ subprojects {
         failOnError = false
     }
 
-    publish {
-        dependsOn assemble
-    }
-
     publishing {
         repositories {
             maven {
