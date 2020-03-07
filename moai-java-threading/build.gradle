@@ -26,6 +26,14 @@ jacocoTestCoverageVerification {
     }
 }
 
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
 publishing {
     repositories {
         maven {
