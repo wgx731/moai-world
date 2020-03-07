@@ -1,12 +1,12 @@
 dependencies {
-    implementation 'org.apache.commons:commons-lang3'
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'org.apache.logging.log4j:log4j-core'
-    implementation 'org.apache.logging.log4j:log4j-api'
-    implementation 'org.apache.logging.log4j:log4j-slf4j-impl'
-    implementation 'com.lmax:disruptor:3.4.2'
+    implementation("org.apache.commons:commons-lang3")
+    implementation("com.fasterxml.jackson.core:jackson-databind")
+    implementation("org.apache.logging.log4j:log4j-core")
+    implementation("org.apache.logging.log4j:log4j-api")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl")
+    implementation("com.lmax:disruptor:3.4.2")
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation("junit:junit:4.12")
 }
 
 jacocoTestCoverageVerification {
@@ -20,7 +20,7 @@ jacocoTestCoverageVerification {
     afterEvaluate {
         getClassDirectories().setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    'com/github/wgx731/Main*',
+                    "com/github/wgx731/Main*",
             ])
         }))
     }

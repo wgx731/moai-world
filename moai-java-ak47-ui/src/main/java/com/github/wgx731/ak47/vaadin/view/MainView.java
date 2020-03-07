@@ -20,6 +20,7 @@ import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.server.StreamResource;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,6 +41,7 @@ import java.util.Objects;
     shortName = "SVPA",
     description = "A demo photo upload app build with spring and vaadin"
 )
+@SuppressFBWarnings("SE_BAD_FIELD")
 public class MainView extends VerticalLayout implements HasUrlParameter<String> {
 
     private static final long serialVersionUID = -2519398887123033381L;
@@ -51,10 +53,11 @@ public class MainView extends VerticalLayout implements HasUrlParameter<String> 
     public static final int DEFAULT_PAGE_SIZE = 20;
     public static final String DEFAULT_SORT_KEY = "id";
 
-    transient StorageService service;
-    transient SecurityUtils securityUtils;
-    Map<String, List<String>> parametersMap;
+    StorageService service;
+    SecurityUtils securityUtils;
     Page<Photo> data;
+
+    Map<String, List<String>> parametersMap;
 
     VerticalLayout headerLayout;
     Grid<Photo> photoGrid;
