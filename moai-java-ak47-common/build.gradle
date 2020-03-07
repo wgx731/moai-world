@@ -1,23 +1,23 @@
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 test {
-    dependsOn spotbugsMain, spotbugsTest
+    dependsOn(spotbugsMain, spotbugsTest)
     useJUnitPlatform()
     testLogging {
-        events "passed", "skipped", "failed"
+        events("passed", "skipped", "failed")
     }
 }
 
 bootJar {
-    enabled false
+    enabled = false
 }
 
 jar {
-    enabled true
+    enabled = true
 }
 
 jacocoTestCoverageVerification {

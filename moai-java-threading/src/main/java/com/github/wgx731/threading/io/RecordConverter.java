@@ -18,37 +18,40 @@ import java.util.List;
 @Slf4j
 public class RecordConverter {
 
-  @NonNull
-  private ObjectMapper mapper;
-
-  @NonNull
-  private Charset charset;
-
-  public boolean writeToFile(List<Record> records, Path location) {
-    try {
-      String jsonString = mapper.writeValueAsString(records);
-      Files.write(location, jsonString.getBytes(charset));
-    } catch (JsonProcessingException e) {
-      log.warn("can't serialize records.", e);
-      return false;
-    } catch (IOException e) {
-      log.warn("can't write json string.", e);
-      return false;
-    }
-    return true;
-  }
-
-
-  public List<Record> readFromFile(Path location) throws IOException {
-    if (!Files.isRegularFile(location)) {
-      throw new IOException(String.format("wrong path: %s", location));
-    }
-    List<Record> records = mapper.readValue(
-        location.toFile(),
+    public static final TypeReference<List<Record>> VALUE_TYPE_REF =
         new TypeReference<List<Record>>() {
+        };
+
+    @NonNull
+    private ObjectMapper mapper;
+
+    @NonNull
+    private Charset charset;
+
+    public boolean writeToFile(List<Record> records, Path location) {
+        try {
+            String jsonString = mapper.writeValueAsString(records);
+            Files.write(location, jsonString.getBytes(charset));
+        } catch (JsonProcessingException e) {
+            log.warn("can't serialize records.", e);
+            return false;
+        } catch (IOException e) {
+            log.warn("can't write json string.", e);
+            return false;
         }
-    );
-    return records;
-  }
+        return true;
+    }
+
+
+    public List<Record> readFromFile(Path location) throws IOException {
+        if (!Files.isRegularFile(location)) {
+            throw new IOException(String.format("wrong path: %s", location));
+        }
+        List<Record> records = mapper.readValue(
+            location.toFile(),
+            VALUE_TYPE_REF
+        );
+        return records;
+    }
 
 }

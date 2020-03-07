@@ -1,26 +1,26 @@
 dependencies {
-    implementation project(':moai-java-ak47-common')
-    implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    runtimeOnly 'mysql:mysql-connector-java'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation(project(":moai-java-ak47-common"))
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    runtimeOnly("mysql:mysql-connector-java")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 springBoot {
-    mainClassName = 'com.github.wgx731.ak47.Application'
+    mainClassName = "com.github.wgx731.ak47.Application"
 }
 
 bootJar {
-    enabled true
+    enabled = true
 }
 
 test {
-    dependsOn spotbugsMain, spotbugsTest
+    dependsOn(spotbugsMain, spotbugsTest)
     useJUnitPlatform()
     testLogging {
-        events "passed", "skipped", "failed"
+        events("passed", "skipped", "failed")
     }
 }
 
@@ -35,13 +35,13 @@ jacocoTestCoverageVerification {
     afterEvaluate {
         getClassDirectories().setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    'com/github/wgx731/ak47/Application*',
-                    'com/github/wgx731/ak47/config/*'
+                    "com/github/wgx731/ak47/Application*",
+                    "com/github/wgx731/ak47/config/*"
             ])
         }))
     }
 }
 
 publish {
-    dependsOn assemble
+    dependsOn(assemble)
 }

@@ -18,6 +18,7 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import elemental.json.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -28,6 +29,7 @@ import java.io.IOException;
 @SpringComponent
 @UIScope
 @Slf4j
+@SuppressFBWarnings("SE_BAD_FIELD")
 public class PhotoEditor extends VerticalLayout implements KeyNotifier {
 
     private static final long serialVersionUID = 6716807453282399652L;
@@ -36,11 +38,12 @@ public class PhotoEditor extends VerticalLayout implements KeyNotifier {
         void onChange();
     }
 
-    private transient ChangeHandler changeHandler;
-    private transient RabbitTemplate rabbitTemplate;
-    private transient StorageService storageService;
-    private transient SecurityUtils securityUtils;
-    private transient Photo photo;
+    private ChangeHandler changeHandler;
+    private RabbitTemplate rabbitTemplate;
+    private StorageService storageService;
+    private SecurityUtils securityUtils;
+    private Photo photo;
+
     private MemoryBuffer buffer;
 
     // UI
